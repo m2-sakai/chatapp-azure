@@ -4,6 +4,10 @@
 
 Azure Web Pubsub を使ったチャットアプリです。
 
+## どんなアプリ？
+
+TBD...
+
 ## アーキテクチャ
 
 ![architecture](./assets/architecture.drawio.png)
