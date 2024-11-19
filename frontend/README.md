@@ -1,51 +1,27 @@
-# templates/spa
+# フロントエンドアプリ
 
-This template leverages [Remix SPA Mode](https://remix.run/docs/en/main/guides/spa-mode) to build your app as a Single-Page Application using [Client Data](https://remix.run/docs/en/main/guides/client-data) for all of your data loads and mutations.
+## 開発環境
 
-## Setup
+フロントエンドは、SPA で構築し、Azure Static Web Apps でホスティングする前提で作成します。
 
-```shellscript
-npx create-remix@latest --template remix-run/remix/templates/spa
+| カテゴリ                    | 使用技術     | バージョン |
+| --------------------------- | ------------ | ---------- |
+| フレームワーク              | Remix        | ^2.14.0    |
+| ランタイム                  | Node.js      | 22.11.0    |
+| ビルドツール                | Vite         | ^5.1.0     |
+| CSS                         | Tailwind CSS | ^3.4.4     |
+| UI コンポーネントライブラリ | shadcn/ui    | -          |
+
+## ローカルでの起動方法
+
+本リポジトリをクローン後、以下のコマンドを使用し、依存モジュールのダウンロードを行います。
+
+```bash
+$ npm ci
 ```
 
-## Development
+以下のコマンドを実行するとコンソールに URL が表示され、ブラウザからアクセス可能です。
 
-You can develop your SPA app just like you would a normal Remix app, via:
-
-```shellscript
-npm run dev
+```bash
+$ npm run dev
 ```
-
-## Production
-
-When you are ready to build a production version of your app, `npm run build` will generate your assets and an `index.html` for the SPA.
-
-```shellscript
-npm run build
-```
-
-### Preview
-
-You can preview the build locally with [vite preview](https://vitejs.dev/guide/cli#vite-preview) to serve all routes via the single `index.html` file:
-
-```shellscript
-npm run preview
-```
-
-> [!IMPORTANT]
->
-> `vite preview` is not designed for use as a production server
-
-### Deployment
-
-You can then serve your app from any HTTP server of your choosing. The server should be configured to serve multiple paths from a single root `/index.html` file (commonly called "SPA fallback"). Other steps may be required if the server doesn't directly support this functionality.
-
-For a simple example, you could use [sirv-cli](https://www.npmjs.com/package/sirv-cli):
-
-```shellscript
-npx sirv-cli build/client/ --single
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
