@@ -26,7 +26,6 @@ export default function Index() {
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
       <h1 className='text-xl font-bold mb-6'>以下にユーザ名とメールアドレスを入力してください</h1>
-      <h1>Create Blog Post</h1>
       <FormCn {...form}>
         <Form method='post' className='grid gap-4'>
           <FormField
