@@ -6,7 +6,7 @@ import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useF
 import { cn } from '~/lib/utils';
 import { Label } from '~/components/ui/label';
 
-const Form = FormProvider;
+const FormCn = FormProvider;
 
 type FormFieldContextValue<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>> = {
   name: TName;
@@ -99,4 +99,4 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
 });
 FormMessage.displayName = 'FormMessage';
 
-export { useFormField, Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField };
+export { useFormField, FormCn, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField };
