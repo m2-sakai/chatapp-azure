@@ -1,5 +1,5 @@
 import type { MetaFunction } from '@remix-run/node';
-import { Button } from '~/components/ui/button';
+import { UserInputForm } from '../components/user-input-form';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Remix Chat App' }, { name: 'description', content: 'チャットアプリ' }];
@@ -7,13 +7,9 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <div>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>Awesome</li>
-        <li>Features</li>
-      </ul>
-      <Button>Click me</Button>
+    <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
+      <h1 className='text-xl font-bold mb-6'>以下にユーザ名とメールアドレスを入力してください</h1>
+      <UserInputForm />
     </div>
   );
 }
