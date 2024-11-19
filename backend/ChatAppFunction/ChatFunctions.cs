@@ -5,11 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace ChatAppFunction
 {
-    public class GetChats
+    public class ChatFunctions
     {
-        private readonly ILogger<GetChats> _logger;
+        private readonly ILogger<ChatFunctions> _logger;
 
-        public GetChats(ILogger<GetChats> logger)
+        public ChatFunctions(ILogger<ChatFunctions> logger)
         {
             _logger = logger;
         }
