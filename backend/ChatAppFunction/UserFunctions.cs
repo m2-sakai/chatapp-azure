@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net;
+using System.Text.Json.Serialization;
 
 namespace ChatAppFunction
 {
@@ -18,8 +18,8 @@ namespace ChatAppFunction
         public UserFunctions(CosmosClient cosmosClient, ILogger<UserFunctions> logger)
         {
             _cosmosClient = cosmosClient;
-            var database = _cosmosClient.GetDatabase("COSMOS_DATABASE");
-            _container = database.GetContainer("COSMOS_CONTAINER"); ;
+            var database = _cosmosClient.GetDatabase(Environment.GetEnvironmentVariable("COSMOS_DATABASE"));
+            _container = database.GetContainer(Environment.GetEnvironmentVariable("COSMOS_CONTAINER"));
             _logger = logger;
         }
 
@@ -46,7 +46,7 @@ namespace ChatAppFunction
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
                 var httpResponse = req.CreateResponse(HttpStatusCode.NotFound);
-                await httpResponse.WriteStringAsync("User not found");
+                await httpResponse.WriteStringAsync("User not found" + ex.Message);
                 return httpResponse;
             }
         }
@@ -63,13 +63,8 @@ namespace ChatAppFunction
                 }
 
                 var user = JsonConvert.DeserializeObject<User>(requestBody);
-
-                if (user == null || string.IsNullOrWhiteSpace(user.Id) || string.IsNullOrWhiteSpace(user.Email))
-                {
-                    var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-                    await badResponse.WriteStringAsync("Invalid user data.");
-                    return badResponse;
-                }
+                Guid id = Guid.NewGuid();
+                user.Id = id.ToString();
 
                 ItemResponse<User> response = await _container.CreateItemAsync(user, new PartitionKey(user.Id));
                 var successResponse = req.CreateResponse(HttpStatusCode.Created);
@@ -102,8 +97,14 @@ namespace ChatAppFunction
 
     public class User
     {
+        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
+        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
+        [JsonProperty("email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; }
     }
 }
