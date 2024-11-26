@@ -93,7 +93,7 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: privateDnsZoneInfo.privateDnsZoneName
+        name: privateDnsZoneName
         properties: {
           privateDnsZoneId: existingPrivateDnsZone.id
         }

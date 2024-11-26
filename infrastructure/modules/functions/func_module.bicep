@@ -36,6 +36,11 @@ param userAssignedIdentityName string
 @description('仮想ネットワーク統合のための仮想ネットワークのリソース名')
 param virtualNetworkName string
 
+@description('仮想ネットワーク統合のための仮想ネットワークのサブネット名')
+@minLength(1)
+@maxLength(80)
+param subnetName string
+
 @description('ストレージアカウント Blob ストレージ用のリソース名')
 @minLength(3)
 @maxLength(24)
@@ -46,7 +51,7 @@ param storageAccountBlobStorageName string
 @maxLength(260)
 param applicationInsightsName string
 
-var vnetConnectionName = '${virtualNetworkInfo.virtualNetworkName}_${subnetName}'
+var vnetConnectionName = '${virtualNetworkName}_${subnetName}'
 
 resource existingAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' existing = {
   name: appServicePlanName
@@ -151,7 +156,7 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
     redundancyMode: 'None'
     publicNetworkAccess: 'Enabled'
     storageAccountRequired: false
-    virtualNetworkSubnetId: '${existingVnet.id}/subnets/${subnetName}'
+    virtualNetworkSubnetId: '${existingVirtualNetwork.id}/subnets/${subnetName}'
     keyVaultReferenceIdentity: existingUserAssignedIdentity.id
   }
 }
@@ -190,7 +195,7 @@ resource functionAppWeb 'Microsoft.Web/sites/config@2023-12-01' = {
     netFrameworkVersion: 'v8.0'
     requestTracingEnabled: false
     remoteDebuggingEnabled: false
-    remoteDebuggingVersion: 'VS2019'
+    remoteDebuggingVersion: 'VS2022'
     httpLoggingEnabled: false
     acrUseManagedIdentityCreds: false
     logsDirectorySizeLimit: 35
@@ -255,7 +260,7 @@ resource functionAppVirtualNetworkConnections 'Microsoft.Web/sites/virtualNetwor
   parent: functionApp
   name: vnetConnectionName
   properties: {
-    vnetResourceId: '${existingVnet.id}/subnets/${subnetName}'
+    vnetResourceId: '${existingVirtualNetwork.id}/subnets/${subnetName}'
     isSwift: true
   }
 }

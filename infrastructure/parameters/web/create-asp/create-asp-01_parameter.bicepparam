@@ -1,4 +1,4 @@
-using '../../../../templates/web/create-asp_template.bicep'
+using '../../../templates/web/create-asp_template.bicep'
 
 /*** param: 共通 ***/
 param tag = {}

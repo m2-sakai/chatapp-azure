@@ -36,9 +36,6 @@ param changeFeedEnabled bool = true
 @description('コンテナーのポイントインタイムリストアの有効化')
 param restorePolicyEnabled bool = false
 
-@description('暗号化キーの情報')
-param encryptKeyInfo object
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountBlobStorageName
   location: location
@@ -63,9 +60,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     }
     supportsHttpsTrafficOnly: true
     encryption: {
-      identity: {
-        userAssignedIdentity: existingUserAssignedIdentity.id
-      }
       requireInfrastructureEncryption: false
       services: {
         file: {

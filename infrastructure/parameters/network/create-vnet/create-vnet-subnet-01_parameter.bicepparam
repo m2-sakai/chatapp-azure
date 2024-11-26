@@ -1,4 +1,4 @@
-using '../../../../templates/network/create-vnet-subnet_template.bicep'
+using '../../../templates/network/create-vnet-subnet_template.bicep'
 
 /*** param: 共通 ***/
 param tag = {}
@@ -18,11 +18,22 @@ param subnets = [
     delegations: []
     privateEndpointNetworkPolicies: 'Enabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    networkSecurityGroupName: 'nsg-adcl-test-sub-0_0'
+    networkSecurityGroupName: 'nsg-adcl-test-je-sub-0_0'
+    routeTableName: 'null'
   }
   {
     subnetName: 'sub-1_0'
     addressPrefix: '172.16.1.0/24'
+    serviceEndpoints: []
+    delegations: []
+    privateEndpointNetworkPolicies: 'Enabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+    networkSecurityGroupName: 'nsg-adcl-test-je-sub-1_0'
+    routeTableName: 'null'
+  }
+  {
+    subnetName: 'sub-2_0'
+    addressPrefix: '172.16.2.0/24'
     serviceEndpoints: []
     delegations: [
       {
@@ -35,16 +46,8 @@ param subnets = [
     ]
     privateEndpointNetworkPolicies: 'Enabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    networkSecurityGroupName: 'nsg-adcl-test-sub-1_0'
-  }
-  {
-    subnetName: 'sub-2_0'
-    addressPrefix: '172.16.2.0/24'
-    serviceEndpoints: []
-    delegations: []
-    privateEndpointNetworkPolicies: 'Enabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-    networkSecurityGroupName: 'nsg-adcl-test-sub-2_0'
+    networkSecurityGroupName: 'nsg-adcl-test-je-sub-2_0'
+    routeTableName: 'null'
   }
   {
     subnetName: 'sub-3_0'
@@ -53,7 +56,8 @@ param subnets = [
     delegations: []
     privateEndpointNetworkPolicies: 'Enabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    networkSecurityGroupName: 'nsg-adcl-test-sub-3_0'
+    networkSecurityGroupName: 'nsg-adcl-test-je-sub-3_0'
+    routeTableName: 'null'
   }
   {
     subnetName: 'sub-4_0'
@@ -62,6 +66,7 @@ param subnets = [
     delegations: []
     privateEndpointNetworkPolicies: 'Enabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    networkSecurityGroupName: 'nsg-adcl-test-sub-4_0'
+    networkSecurityGroupName: 'nsg-adcl-test-je-sub-4_0'
+    routeTableName: 'null'
   }
 ]

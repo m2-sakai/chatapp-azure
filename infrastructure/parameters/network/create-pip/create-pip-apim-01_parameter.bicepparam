@@ -1,4 +1,4 @@
-using '../../../../templates/network/create-pip_template.bicep'
+using '../../../templates/network/create-pip_template.bicep'
 
 /*** param: 共通 ***/
 param tag = {}

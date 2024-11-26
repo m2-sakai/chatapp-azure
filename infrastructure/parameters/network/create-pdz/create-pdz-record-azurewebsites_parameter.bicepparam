@@ -1,4 +1,4 @@
-using '../../../../templates/network/create-pdz-record_template.bicep'
+using '../../../templates/network/create-pdz-record_template.bicep'
 
 /*** param: 共通 ***/
 param tag = {}

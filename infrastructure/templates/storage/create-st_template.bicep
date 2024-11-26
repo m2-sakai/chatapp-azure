@@ -38,12 +38,6 @@ param changeFeedEnabled bool = true
 @description('コンテナーのポイントインタイムリストアの有効化')
 param restorePolicyEnabled bool = false
 
-@description('暗号化キーの情報')
-param encryptKeyInfo object
-
-@description('マネージドIDの情報')
-param userAssignedIdentityInfo object
-
 /*** resource/module: Storage Account ***/
 module stModule '../../modules/storage-account/st_module.bicep' = {
   name: '${storageAccountBlobStorageName}_Deployment'
@@ -58,8 +52,6 @@ module stModule '../../modules/storage-account/st_module.bicep' = {
     accessTier: accessTier
     changeFeedEnabled: changeFeedEnabled
     restorePolicyEnabled: restorePolicyEnabled
-    encryptKeyInfo: encryptKeyInfo
-    userAssignedIdentityInfo: userAssignedIdentityInfo
   }
   dependsOn: []
 }
