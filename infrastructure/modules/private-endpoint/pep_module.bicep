@@ -29,8 +29,8 @@ param assignStaticPrivateIP bool = false
 @description('プライベートIPを静的に割り当てる場合のIPアドレス情報')
 param privateIPAddressInfo object = {}
 
-@description('仮想ネットワークの情報')
-param virtualNetworkInfo object
+@description('仮想ネットワークのリソース名')
+param virtualNetworkName string
 
 @description('仮想ネットワークのサブネット名')
 @minLength(1)
@@ -38,11 +38,10 @@ param virtualNetworkInfo object
 param subnetName string
 
 @description('プライベートDNSゾーンの情報')
-param privateDnsZoneInfo object
+param privateDnsZoneName string
 
 resource existingVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' existing = {
-  scope: resourceGroup(virtualNetworkInfo.subscriptionId, virtualNetworkInfo.resourceGroupName)
-  name: virtualNetworkInfo.virtualNetworkName
+  name: virtualNetworkName
 }
 
 resource existingSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' existing = {
@@ -51,8 +50,7 @@ resource existingSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' e
 }
 
 resource existingPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
-  scope: resourceGroup(privateDnsZoneInfo.subscriptionId, privateDnsZoneInfo.resourceGroupName)
-  name: privateDnsZoneInfo.privateDnsZoneName
+  name: privateDnsZoneName
 }
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {

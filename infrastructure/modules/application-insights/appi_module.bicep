@@ -43,12 +43,11 @@ param publicNetworkAccessForIngestion string = 'Enabled'
 ])
 param publicNetworkAccessForQuery string = 'Enabled'
 
-@description('Log Analytics ワークスペースの情報')
-param logAnalyticsWorkspaceInfo object
+@description('Log Analytics ワークスペースのリソース名')
+param logAnalyticsWorkspaceName string
 
 resource existingLogAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
-  scope: resourceGroup(logAnalyticsWorkspaceInfo.subscriptionId, logAnalyticsWorkspaceInfo.resourceGroupName)
-  name: logAnalyticsWorkspaceInfo.logAnalyticsWorkspaceName
+  name: logAnalyticsWorkspaceName
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {

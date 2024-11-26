@@ -13,16 +13,15 @@ param privateDnsZoneVnetLinkName string
 @description('仮想マシンレコードの自動登録の有効有無')
 param registrationEnabled bool = false
 
-@description('仮想ネットワークの情報')
-param virtualNetworkInfo object
+@description('仮想ネットワークのリソース名')
+param virtualNetworkName string
 
 resource existingPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: privateDnsZoneName
 }
 
 resource existingVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' existing = {
-  scope: resourceGroup(virtualNetworkInfo.subscriptionId, virtualNetworkInfo.resourceGroupName)
-  name: virtualNetworkInfo.virtualNetworkName
+  name: virtualNetworkName
 }
 
 resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {

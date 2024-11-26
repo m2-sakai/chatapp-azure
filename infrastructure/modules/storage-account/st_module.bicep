@@ -39,14 +39,6 @@ param restorePolicyEnabled bool = false
 @description('暗号化キーの情報')
 param encryptKeyInfo object
 
-@description('マネージドIDの情報')
-param userAssignedIdentityInfo object
-
-resource existingUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
-  scope: resourceGroup(userAssignedIdentityInfo.subscriptionId, userAssignedIdentityInfo.resourceGroupName)
-  name: userAssignedIdentityInfo.userAssignedIdentityName
-}
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountBlobStorageName
   location: location
@@ -55,12 +47,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     name: skuName
   }
   kind: kind
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${existingUserAssignedIdentity.id}': {}
-    }
-  }
   properties: {
     dnsEndpointType: 'Standard'
     defaultToOAuthAuthentication: false
@@ -81,11 +67,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
         userAssignedIdentity: existingUserAssignedIdentity.id
       }
       requireInfrastructureEncryption: false
-      keyvaultproperties: {
-        keyvaulturi: 'https://${encryptKeyInfo.keyVaultName}${environment().suffixes.keyvaultDns}/'
-        keyname: encryptKeyInfo.keyName
-        keyversion: encryptKeyInfo.keyVersion  
-      }
       services: {
         file: {
           keyType: 'Account'
@@ -104,7 +85,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
           enabled: true
         }
       }
-      keySource: 'Microsoft.Keyvault'
+      keySource: 'Microsoft.Storage'
     }
     accessTier: accessTier
   }
