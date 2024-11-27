@@ -14,7 +14,7 @@ param tag object = {}
 param appServicePlanName string
 
 @description('SKUの名前')
-param skuName string = 'P1V3'
+param skuName string = 'B1'
 
 @description('リソースに割り当てられているインスタンスの数')
 param skuCapacity int = 1
