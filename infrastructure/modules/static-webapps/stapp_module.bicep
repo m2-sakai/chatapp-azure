@@ -8,7 +8,7 @@ param location string = 'East Asia'
 param tag object = {}
 
 @description('Static WebApps のリソース名')
-param staticWebAppName string
+param staticWebAppName string = 'stapp-adcl-test-je-01'
 
 @description('Static WebApps のSKU名')
 param sku string = 'Free'
@@ -16,6 +16,7 @@ param sku string = 'Free'
 resource staticWebApp 'Microsoft.Web/staticSites@2023-12-01' = {
   name: staticWebAppName
   location: location
+  tags: tag
   sku: {
     name: sku
     tier: sku
