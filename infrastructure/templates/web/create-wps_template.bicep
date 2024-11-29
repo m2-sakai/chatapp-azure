@@ -45,6 +45,9 @@ param assignStaticPrivateIP bool = false
 @description('プライベートIPを静的に割り当てる場合のIPアドレス情報')
 param privateIPAddressInfo object = {}
 
+@description('仮想ネットワークのリソース名')
+param virtualNetworkName string
+
 @description('プライベートエンドポイントのための仮想ネットワークのサブネット名')
 @minLength(1)
 @maxLength(80)

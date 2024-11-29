@@ -12,7 +12,7 @@ param applicationInsightsName = 'appi-adcl-test-je-01'
 param globalPolicyXml = '<policies><inbound/><backend><forward-request/></backend><outbound/><on-error/></policies>'
 
 /*** param: API Management API ***/
-param apis array = []
+param apis = []
 
 /*** param: API Management Operation ***/
-param operations array = []
+param operations = []
