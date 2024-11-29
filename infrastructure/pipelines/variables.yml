@@ -1,0 +1,61 @@
+variables:
+  ###################################
+  # Network Security Group
+  ###################################
+  - name: nsgRuleParameterList
+    value: 'sub-0_0,sub-1_0,sub-2_0,sub-3_0,sub-4_0'
+  ###################################
+  # Virtual Network
+  ###################################
+  - name: vnetParameterList
+    value: '01'
+  ###################################
+  # Private DNS Zone
+  ###################################
+  - name: pdzParameterList
+    value: 'azurewebsites,documents,webpubsub'
+  ###################################
+  # Public IP
+  ###################################
+  - name: pipParameterList
+    value: 'apim-01'
+  ###################################
+  # Log Analytics + Application Insights
+  ###################################
+  - name: logAppiParameterList
+    value: '01'
+  ###################################
+  # Managed Identity
+  ###################################
+  - name: idParameterList
+    value: '01'
+  ###################################
+  # Storage Account
+  ###################################
+  - name: stParameterList
+    value: '01'
+  ###################################
+  # Web PubSub
+  ###################################
+  - name: wpsParameterList
+    value: '01'
+  ###################################
+  # App Service Plan
+  ###################################
+  - name: aspParameterList
+    value: '01'
+  ###################################
+  # Functions
+  ###################################
+  - name: funcParameterList
+    value: '01'
+  ###################################
+  # Cosmos DB
+  ###################################
+  - name: cosmosParameterList
+    value: '01'
+  ###################################
+  # API Management
+  ###################################
+  - name: apimParameterList
+    value: '01'

@@ -1,14 +1,275 @@
 trigger:
-  - main
+  - none
+
+variables:
+  - group: adcl-variables
+  - template: variables.yml
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-  - script: echo Hello, world!
-    displayName: 'Run a one-line script'
-
-  - script: |
-      echo Add other tasks to build, test, and deploy your project.
-      echo See https://aka.ms/yaml
-    displayName: 'Run a multi-line script'
+stages:
+  ##########################################
+  # Network Security Group
+  ##########################################
+  - stage: NetworkSecurityGroup
+    jobs:
+      - ${{ each parameter in split(variables.nsgRuleParameterList, ',') }}:
+          - job: Create_NSG_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/network/create-nsg-rule_template.bicep
+                  csmParametersFile: infrastructure/parameters/network/create-nsg/create-nsg-rule-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # Virtual Network
+  ##########################################
+  - stage: VirtualNetwork
+    jobs:
+      - ${{ each parameter in split(variables.vnetParameterList, ',') }}:
+          - job: Create_VNET_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/network/create-vnet-subnet_template.bicep
+                  csmParametersFile: infrastructure/parameters/network/create-vnet/create-vnet-subnet-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # Private DNS Zone
+  ##########################################
+  - stage: PrivateDNSZone
+    jobs:
+      - ${{ each parameter in split(variables.pdzParameterList, ',') }}:
+          - job: Create_PDZ_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/network/create-pdz-record_template.bicep
+                  csmParametersFile: infrastructure/parameters/network/create-pdz/create-pdz-record-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # Public IP
+  ##########################################
+  - stage: NetworkSecurityGroup
+    jobs:
+      - ${{ each parameter in split(variables.pipParameterList, ',') }}:
+          - job: Create_PIP_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/network/create-pip_template.bicep
+                  csmParametersFile: infrastructure/parameters/network/create-pip/create-pip-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # Log Analytics + Application Insights
+  ##########################################
+  - stage: LogAnalyticsApplicationInsights
+    jobs:
+      - ${{ each parameter in split(variables.logAppiParameterList, ',') }}:
+          - job: Create_LOG_APPI_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/monitor/create-log-appi_template.bicep
+                  csmParametersFile: infrastructure/parameters/monitor/create-log-appi/create-log-appi-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # Managed Identity
+  ##########################################
+  - stage: ManagedIdentity
+    jobs:
+      - ${{ each parameter in split(variables.idParameterList, ',') }}:
+          - job: Create_ID_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/identity/create-id_template.bicep
+                  csmParametersFile: infrastructure/parameters/identity/create-id/create-id-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # Storage Account
+  ##########################################
+  - stage: StorageAccount
+    jobs:
+      - ${{ each parameter in split(variables.stParameterList, ',') }}:
+          - job: Create_ST_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/storage/create-st_template.bicep
+                  csmParametersFile: infrastructure/parameters/storage/create-st/create-st-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # Web PubSub
+  ##########################################
+  - stage: WebPubSub
+    jobs:
+      - ${{ each parameter in split(variables.wpsParameterList, ',') }}:
+          - job: Create_WPS_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/web/create-wps_template.bicep
+                  csmParametersFile: infrastructure/parameters/web/create-wps/create-wps-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # App Service Plan
+  ##########################################
+  - stage: AppServicePlan
+    jobs:
+      - ${{ each parameter in split(variables.aspParameterList, ',') }}:
+          - job: Create_ASP_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/web/create-asp_template.bicep
+                  csmParametersFile: infrastructure/parameters/web/create-asp/create-asp-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # Functions
+  ##########################################
+  - stage: Functions
+    jobs:
+      - ${{ each parameter in split(variables.funcParameterList, ',') }}:
+          - job: Create_FUNC_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/web/create-func_template.bicep
+                  csmParametersFile: infrastructure/parameters/web/create-func/create-func-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # Cosmos DB
+  ##########################################
+  - stage: CosmosDB
+    jobs:
+      - ${{ each parameter in split(variables.cosmosParameterList, ',') }}:
+          - job: Create_COSMOS_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/database/create-cosmos_template.bicep
+                  csmParametersFile: infrastructure/parameters/database/create-cosmos/create-cosmos-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
+  ##########################################
+  # API Management
+  ##########################################
+  - stage: APIManagement
+    jobs:
+      - ${{ each parameter in split(variables.apimParameterList, ',') }}:
+          - job: Create_APIM_${{ replace(parameter, '-', '_') }}
+            condition: ne('${{ parameter }}', '')
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Bicep deploy for ${{ parameter }}'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: '${{ variables.serviceConnectionName }}'
+                  subscriptionId: '${{ variables.subscriptionId }}'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '${{ variables.resourceGroupName }}'
+                  location: 'Japan East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: infrastructure/templates/integration/create-apim_template.bicep
+                  csmParametersFile: infrastructure/parameters/integration/create-apim/create-apim-${{ parameter }}_parameter.bicepparam
+                  deploymentMode: 'Incremental'
