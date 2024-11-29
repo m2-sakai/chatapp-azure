@@ -4,11 +4,11 @@
 # az login
 
 # nsg deploy
-# az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-0_0_parameter.bicepparam
-# az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-1_0_parameter.bicepparam
-# az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-2_0_parameter.bicepparam
-# az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-3_0_parameter.bicepparam
-# az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-4_0_parameter.bicepparam
+az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-0_0_parameter.bicepparam
+az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-1_0_parameter.bicepparam
+az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-2_0_parameter.bicepparam
+az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-3_0_parameter.bicepparam
+az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-4_0_parameter.bicepparam
 
 # # vnet deploy
 # az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-vnet-subnet_template.bicep -p ../parameters/network/create-vnet/create-vnet-subnet-01_parameter.bicepparam
@@ -43,4 +43,4 @@
 # az deployment group create -g rg-adcl-test-je-01 -f ../templates/database/create-cosmos_template.bicep -p ../parameters/database/create-cosmos/create-cosmos-01_parameter.bicepparam
 
 # apim deploy
-az deployment group create -g rg-adcl-test-je-01 -f ../templates/integration/create-apim_template.bicep -p ../parameters/integration/create-apim/create-apim-01_parameter.bicepparam
+# az deployment group create -g rg-adcl-test-je-01 -f ../templates/integration/create-apim_template.bicep -p ../parameters/integration/create-apim/create-apim-01_parameter.bicepparam
