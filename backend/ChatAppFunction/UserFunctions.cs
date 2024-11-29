@@ -5,7 +5,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net;
-using System.Text.Json.Serialization;
+using ChatAppFunction.Model;
 
 namespace ChatAppFunction
 {
@@ -19,13 +19,15 @@ namespace ChatAppFunction
         {
             _cosmosClient = cosmosClient;
             var database = _cosmosClient.GetDatabase(Environment.GetEnvironmentVariable("COSMOS_DATABASE"));
-            _container = database.GetContainer(Environment.GetEnvironmentVariable("COSMOS_CONTAINER"));
+            _container = database.GetContainer(Environment.GetEnvironmentVariable("COSMOS_USER_CONTAINER"));
             _logger = logger;
         }
 
         [Function("GetUser")]
         public async Task<HttpResponseData> GetUser([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
         {
+            _logger.LogInformation("Processing GetUser Functions.");
+
             string userId = req.Query["userId"];
 
             if (userId == null)
@@ -37,7 +39,7 @@ namespace ChatAppFunction
 
             try
             {
-                ItemResponse<User> response = await _container.ReadItemAsync<User>(userId, new PartitionKey(userId));
+                ItemResponse<UserInfo> response = await _container.ReadItemAsync<UserInfo>(userId, new PartitionKey(userId));
 
                 var httpResponse = req.CreateResponse(HttpStatusCode.OK);
                 await httpResponse.WriteAsJsonAsync(response.Resource);
@@ -51,9 +53,33 @@ namespace ChatAppFunction
             }
         }
 
+        [Function("GetUsers")]
+        public async Task<HttpResponseData> GetUsers([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
+        {
+            _logger.LogInformation("Processing GetUsers Functions.");
+
+            var query = new QueryDefinition("SELECT * FROM c");
+            var iterator = _container.GetItemQueryIterator<UserInfo>(query);
+            var users = new List<UserInfo>();
+
+            while (iterator.HasMoreResults)
+            {
+                foreach (var user in await iterator.ReadNextAsync())
+                {
+                    users.Add(user);
+                }
+            }
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(users);
+            return response;
+        }
+
         [Function("InsertUser")]
         public async Task<HttpResponseData> InsertUser([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req)
         {
+            _logger.LogInformation("Processing InsertUser Functions.");
+
             try
             {
                 string requestBody;
@@ -62,11 +88,11 @@ namespace ChatAppFunction
                     requestBody = await reader.ReadToEndAsync();
                 }
 
-                var user = JsonConvert.DeserializeObject<User>(requestBody);
+                var user = JsonConvert.DeserializeObject<UserInfo>(requestBody);
                 Guid id = Guid.NewGuid();
                 user.Id = id.ToString();
 
-                ItemResponse<User> response = await _container.CreateItemAsync(user, new PartitionKey(user.Id));
+                ItemResponse<UserInfo> response = await _container.CreateItemAsync(user, new PartitionKey(user.Id));
                 var successResponse = req.CreateResponse(HttpStatusCode.Created);
                 await successResponse.WriteAsJsonAsync(response.Resource);
                 return successResponse;
@@ -93,18 +119,5 @@ namespace ChatAppFunction
                 return errorResponse;
             }
         }
-    }
-
-    public class User
-    {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-        [JsonProperty("name")]
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
-        [JsonProperty("email")]
-        [JsonPropertyName("email")]
-        public string Email { get; set; }
     }
 }

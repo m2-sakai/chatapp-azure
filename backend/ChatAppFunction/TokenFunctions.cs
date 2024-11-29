@@ -1,24 +1,32 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Azure.Messaging.WebPubSub;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace ChatAppFunction
 {
     public class TokenFunctions
     {
         private readonly ILogger<TokenFunctions> _logger;
+        private readonly WebPubSubServiceClient _webPubSubServiceClient;
 
-        public TokenFunctions(ILogger<TokenFunctions> logger)
+        public TokenFunctions(WebPubSubServiceClient webPubSubServiceClient, ILogger<TokenFunctions> logger)
         {
+            _webPubSubServiceClient = webPubSubServiceClient;
             _logger = logger;
         }
 
         [Function("GetToken")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
+        public async Task<HttpResponseData> GetToken([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-            return new OkObjectResult("Welcome to Azure Functions! GetToken");
+            _logger.LogInformation("Processing GetToken Functions.");
+
+            var url = await _webPubSubServiceClient.GetClientAccessUriAsync();
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteStringAsync(url.ToString());
+            return response;
         }
     }
 }
