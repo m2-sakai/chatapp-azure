@@ -78,7 +78,7 @@ stages:
   ##########################################
   # Public IP
   ##########################################
-  - stage: NetworkSecurityGroup
+  - stage: PublicIP
     jobs:
       - ${{ each parameter in split(variables.pipParameterList, ',') }}:
           - job: Create_PIP_${{ replace(parameter, '-', '_') }}
