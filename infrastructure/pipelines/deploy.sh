@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # login
-az login
+# az login
 
 # nsg deploy
 az deployment group create -g rg-adcl-test-je-01 -f ../templates/network/create-nsg-rule_template.bicep -p ../parameters/network/create-nsg/create-nsg-rule-sub-0_0_parameter.bicepparam
@@ -30,6 +30,9 @@ az deployment group create -g rg-adcl-test-je-01 -f ../templates/identity/create
 # st deploy
 az deployment group create -g rg-adcl-test-je-01 -f ../templates/storage/create-st_template.bicep -p ../parameters/storage/create-st/create-st-01_parameter.bicepparam
 
+# web pubsub deploy
+az deployment group create -g rg-adcl-test-je-01 -f ../templates/web/create-wps_template.bicep -p ../parameters/web/create-wps/create-wps-01_parameter.bicepparam
+
 # asp deploy
 az deployment group create -g rg-adcl-test-je-01 -f ../templates/web/create-asp_template.bicep -p ../parameters/web/create-asp/create-asp-01_parameter.bicepparam
 
@@ -38,3 +41,6 @@ az deployment group create -g rg-adcl-test-je-01 -f ../templates/web/create-func
 
 # cosmos deploy
 az deployment group create -g rg-adcl-test-je-01 -f ../templates/database/create-cosmos_template.bicep -p ../parameters/database/create-cosmos/create-cosmos-01_parameter.bicepparam
+
+# apim deploy
+az deployment group create -g rg-adcl-test-je-01 -f ../templates/integration/create-apim_template.bicep -p ../parameters/integration/create-apim/create-apim-01_parameter.bicepparam
