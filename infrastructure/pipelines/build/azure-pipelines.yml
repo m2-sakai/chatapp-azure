@@ -21,7 +21,7 @@ stages:
   # Check-Bicep: Bicepparamファイルの検証
   - stage: CheckBicepparam
     jobs:
-      - job: CheckStg01JeParameters
+      - job: CheckParameters
         steps:
           - script: |
               bash $(Build.SourcesDirectory)/infrastructure/pipelines/build/bicep_lint.sh infrastructure/parameters
