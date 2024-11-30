@@ -1,0 +1,24 @@
+pool: 'stg-je-agent-pool'
+
+stages:
+  # Check-Bicep: Bicepファイルの検証
+  - stage: CheckBicep
+    jobs:
+      - job: CheckModules
+        steps:
+          - script: |
+              bash $(Build.SourcesDirectory)/pipelines/build/bicep_lint.sh infrastructure/modules
+            displayName: 'Lint Modules'
+      - job: CheckTemplates
+        steps:
+          - script: |
+              bash $(Build.SourcesDirectory)/pipelines/build/bicep_lint.sh infrastructure/templates
+            displayName: 'Lint Templates'
+  # Check-Bicep: Bicepparamファイルの検証
+  - stage: CheckBicepparam
+    jobs:
+      - job: CheckStg01JeParameters
+        steps:
+          - script: |
+              bash $(Build.SourcesDirectory)/pipelines/build/bicep_lint.sh infrastructure/parameters
+            displayName: 'Lint Parameters'
