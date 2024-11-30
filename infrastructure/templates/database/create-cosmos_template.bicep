@@ -43,7 +43,16 @@ param privateEndpointSubnetName string
 @description('プライベートDNSゾーンのリソース情報')
 param privateDnsZoneName string
 
-/*** resource/module: WebApps ***/
+/*** param: Role Assignment ***/
+@description('マネージドIDのリソース名')
+@minLength(3)
+@maxLength(128)
+param userAssignedIdentityName string
+
+@description('マネージドIDに付与するロールID')
+param roleDefinitionId string = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+
+/*** resource/module: Cosmos DB ***/
 module cosmosModule '../../modules/cosmos-db/cosmos_module.bicep' = {
   name: '${cosmosDbName}_Deployment'
   params: {
@@ -69,6 +78,19 @@ module cosmosPepModule '../../modules/private-endpoint/pep_module.bicep' = {
     virtualNetworkName: virtualNetworkName
     subnetName: privateEndpointSubnetName
     privateDnsZoneName: privateDnsZoneName
+  }
+  dependsOn: [
+    cosmosModule
+  ]
+}
+
+/*** resource/module: Role Assignment ***/
+module roleModule '../../modules/cosmos-db/cosmos_add-role_module.bicep' = {
+  name: '${cosmosDbName}_role_Deployment'
+  params: {
+    cosmosDbName: cosmosDbName
+    userAssignedIdentityName: userAssignedIdentityName
+    roleDefinitionId: roleDefinitionId
   }
   dependsOn: [
     cosmosModule

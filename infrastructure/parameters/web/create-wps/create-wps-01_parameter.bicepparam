@@ -14,3 +14,6 @@ param privateLinkServiceGroupIds = [
 param virtualNetworkName = 'vnet-adcl-test-je-01'
 param privateEndpointSubnetName = 'sub-1_0'
 param privateDnsZoneName = 'privatelink.webpubsub.azure.com'
+
+/*** param: Role Assignment ***/
+param userAssignedIdentityName = 'id-adcl-test-je-01'

@@ -7,7 +7,7 @@ param location string = resourceGroup().location
 param tag object = {}
 
 @description('WebPubSub のリソース名')
-param webPubSubName string = 'wps-adcl-test-je-98'
+param webPubSubName string
 
 @description('WebPubSubのSKU名')
 param skuName string = 'Standard_S1'
