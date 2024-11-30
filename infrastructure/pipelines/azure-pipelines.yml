@@ -22,7 +22,7 @@ stages:
                 displayName: 'Bicep deploy for ${{ parameter }}'
                 inputs:
                   deploymentScope: 'Resource Group'
-                  azureResourceManagerConnection: 'tutorial-service-connection'
+                  azureResourceManagerConnection: 'adcl-service-connection'
                   subscriptionId: $(subscriptionId)
                   action: 'Create Or Update Resource Group'
                   resourceGroupName: $(resourceGroupName)
