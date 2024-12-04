@@ -57,13 +57,13 @@ param privateEndpointSubnetName string
 param privateDnsZoneName string
 
 /*** param: Role Assignment ***/
-// @description('マネージドIDのリソース名')
-// @minLength(3)
-// @maxLength(128)
-// param userAssignedIdentityName string
+@description('マネージドIDのリソース名')
+@minLength(3)
+@maxLength(128)
+param userAssignedIdentityName string
 
-// @description('マネージドIDに付与するロールID')
-// param roleDefinitionId string = '8a0d8d6f-e9b1-4e6b-9c52-3c931e1e3ee1'
+@description('マネージドIDに付与するロールID')
+param roleDefinitionId string = '12cf5a90-567b-43ae-8102-96cf46c7d9b4'
 
 /*** resource/module: Web PubSub ***/
 module wpsModule '../../modules/web-pubsub/wps_module.bicep' = {
@@ -101,14 +101,14 @@ module wpsPepModule '../../modules/private-endpoint/pep_module.bicep' = {
 }
 
 /*** resource/module: Role Assignment ***/
-// module roleModule '../../modules/web-pubsub/wps_add-role_module.bicep' = {
-//   name: '${webPubSubName}_role_Deployment'
-//   params: {
-//     webPubSubName: webPubSubName
-//     userAssignedIdentityName: userAssignedIdentityName
-//     roleDefinitionId: roleDefinitionId
-//   }
-//   dependsOn: [
-//     wpsModule
-//   ]
-// }
+module roleModule '../../modules/web-pubsub/wps_add-role_module.bicep' = {
+  name: '${webPubSubName}_role_Deployment'
+  params: {
+    webPubSubName: webPubSubName
+    userAssignedIdentityName: userAssignedIdentityName
+    roleDefinitionId: roleDefinitionId
+  }
+  dependsOn: [
+    wpsModule
+  ]
+}

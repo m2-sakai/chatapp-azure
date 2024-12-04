@@ -50,7 +50,7 @@ param privateDnsZoneName string
 param userAssignedIdentityName string
 
 @description('マネージドIDに付与するロールID')
-param roleDefinitionId string = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+param roleDefinitionId string = '5bd9cd88-fe45-4216-938b-f97437e15450'
 
 /*** resource/module: Cosmos DB ***/
 module cosmosModule '../../modules/cosmos-db/cosmos_module.bicep' = {

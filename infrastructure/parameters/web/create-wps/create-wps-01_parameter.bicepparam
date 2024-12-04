@@ -16,4 +16,4 @@ param privateEndpointSubnetName = 'sub-1_0'
 param privateDnsZoneName = 'privatelink.webpubsub.azure.com'
 
 /*** param: Role Assignment ***/
-// param userAssignedIdentityName = 'id-adcl-test-je-01'
+param userAssignedIdentityName = 'id-adcl-test-je-01'
