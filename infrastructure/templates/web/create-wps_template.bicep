@@ -101,14 +101,14 @@ module wpsPepModule '../../modules/private-endpoint/pep_module.bicep' = {
 }
 
 /*** resource/module: Role Assignment ***/
-module roleModule '../../modules/web-pubsub/wps_add-role_module.bicep' = {
-  name: '${webPubSubName}_role_Deployment'
-  params: {
-    webPubSubName: webPubSubName
-    userAssignedIdentityName: userAssignedIdentityName
-    roleDefinitionId: roleDefinitionId
-  }
-  dependsOn: [
-    wpsModule
-  ]
-}
+// module roleModule '../../modules/web-pubsub/wps_add-role_module.bicep' = {
+//   name: '${webPubSubName}_role_Deployment'
+//   params: {
+//     webPubSubName: webPubSubName
+//     userAssignedIdentityName: userAssignedIdentityName
+//     roleDefinitionId: roleDefinitionId
+//   }
+//   dependsOn: [
+//     wpsModule
+//   ]
+// }
