@@ -28,5 +28,5 @@ TBD...
 この場をお借りして感謝申し上げます。
 
 - [Simple Chat App](https://azure.github.io/azure-webpubsub/demos/chat)
-- [Chatr - Azure Web PubSub Sample App](https://code.benco.io/chatr/)]
+- [Chatr - Azure Web PubSub Sample App](https://code.benco.io/chatr/)
 - [Azure API Management で Web PubSub を使用して Socket.IO する](https://learn.microsoft.com/ja-jp/azure/azure-web-pubsub/socket-io-howto-integrate-apim)
