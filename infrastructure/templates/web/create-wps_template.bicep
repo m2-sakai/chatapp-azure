@@ -57,13 +57,13 @@ param privateEndpointSubnetName string
 param privateDnsZoneName string
 
 /*** param: Role Assignment ***/
-@description('マネージドIDのリソース名')
-@minLength(3)
-@maxLength(128)
-param userAssignedIdentityName string
+// @description('マネージドIDのリソース名')
+// @minLength(3)
+// @maxLength(128)
+// param userAssignedIdentityName string
 
-@description('マネージドIDに付与するロールID')
-param roleDefinitionId string = '8a0d8d6f-e9b1-4e6b-9c52-3c931e1e3ee1'
+// @description('マネージドIDに付与するロールID')
+// param roleDefinitionId string = '8a0d8d6f-e9b1-4e6b-9c52-3c931e1e3ee1'
 
 /*** resource/module: Web PubSub ***/
 module wpsModule '../../modules/web-pubsub/wps_module.bicep' = {
