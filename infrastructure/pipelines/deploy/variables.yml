@@ -3,44 +3,44 @@ variables:
   # Network Security Group
   ###################################
   - name: nsgRuleParameterList
-    value: ''
-    # value: 'sub-0_0,sub-1_0,sub-2_0,sub-3_0,sub-4_0'
+    # value: ''
+    value: 'sub-0_0,sub-1_0,sub-2_0,sub-3_0,sub-4_0'
   ###################################
   # Virtual Network
   ###################################
   - name: vnetParameterList
-    value: ''
-    # value: '01'
+    # value: ''
+    value: '01'
   ###################################
   # Private DNS Zone
   ###################################
   - name: pdzParameterList
-    value: ''
-    # value: 'azurewebsites,documents,webpubsub'
+    # value: ''
+    value: 'azurewebsites,documents,webpubsub'
   ###################################
   # Public IP
   ###################################
   - name: pipParameterList
-    value: ''
-    # value: 'apim-01'
+    # value: ''
+    value: 'apim-01'
   ###################################
   # Log Analytics + Application Insights
   ###################################
   - name: logAppiParameterList
-    value: ''
-    # value: '01'
+    # value: ''
+    value: '01'
   ###################################
   # Managed Identity
   ###################################
   - name: idParameterList
-    value: ''
-    # value: '01'
+    # value: ''
+    value: '01'
   ###################################
   # Storage Account
   ###################################
   - name: stParameterList
-    value: ''
-    # value: '01'
+    # value: ''
+    value: '01'
   ###################################
   # Web PubSub
   ###################################
