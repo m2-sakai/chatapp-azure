@@ -5,6 +5,7 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { ClientActionFunctionArgs, Form, redirect } from '@remix-run/react';
 import { UserInfo } from '../features/users/model/UserInfo';
+import { insertUser } from '../features/users/api/userapi';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Remix Chat App' }, { name: 'description', content: 'チャットアプリ' }];
@@ -13,25 +14,10 @@ export const meta: MetaFunction = () => {
 export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
   const body = await request.formData();
   const email = body.get('email') as string | null;
-  const name = body.get('name');
+  const name = body.get('name') as string | null;
   localStorage.setItem('email', email ?? '');
 
-  const response = await fetch('http://localhost:7147/api/InsertUser', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name,
-      email,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorMessage = await response.json();
-    throw new Error(errorMessage);
-  }
-
+  await insertUser(name, email);
   return redirect(`/chat`);
 };
 

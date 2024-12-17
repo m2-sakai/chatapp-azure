@@ -2,18 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { json, redirect, useLoaderData } from '@remix-run/react';
 import { Button } from '../components/ui/button';
 import { ChatMessage } from '../features/chats/model/ChatMessage';
+import { fetchUserData } from '../features/users/api/userapi';
 
 export const clientLoader = async () => {
   try {
     const email = localStorage.getItem('email');
-    const response = await fetch(`http://localhost:7147/api/GetUser?email=${email}`);
-
-    if (!response.ok) {
-      console.error(`Failed to fetch user data: ${response.status}`);
-      return redirect(`/`);
-    }
-    const userData = await response.json();
-
+    const userData = await fetchUserData(email);
     return json(userData);
   } catch (error) {
     console.error(`There was an error fetching the user data: ${error}`);
