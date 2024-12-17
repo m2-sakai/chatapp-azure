@@ -4,24 +4,39 @@ import { useForm } from 'react-hook-form';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { ClientActionFunctionArgs, Form, redirect } from '@remix-run/react';
+import { UserInfo } from '../features/users/model/UserInfo';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Remix Chat App' }, { name: 'description', content: 'チャットアプリ' }];
 };
 
-type UserForm = {
-  username: string;
-  email: string;
-};
-
 export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
   const body = await request.formData();
-  console.log(body);
-  return redirect(`/chat/test`);
+  const email = body.get('email') as string | null;
+  const name = body.get('name');
+  localStorage.setItem('email', email ?? '');
+
+  const response = await fetch('http://localhost:7147/api/InsertUser', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name,
+      email,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.json();
+    throw new Error(errorMessage);
+  }
+
+  return redirect(`/chat`);
 };
 
 export default function Index() {
-  const form = useForm<UserForm>();
+  const form = useForm<UserInfo>();
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
@@ -29,12 +44,12 @@ export default function Index() {
       <FormCn {...form}>
         <Form method='post' className='grid gap-4'>
           <FormField
-            name='username'
+            name='name'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input type='text' placeholder='山田 太郎' autoComplete='username' {...field} />
+                  <Input type='text' placeholder='山田 太郎' autoComplete='name' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

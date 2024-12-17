@@ -28,27 +28,49 @@ namespace ChatAppFunction
         {
             _logger.LogInformation("Processing GetUser Functions.");
 
-            string userId = req.Query["userId"];
+            string email = req.Query["email"];
 
-            if (userId == null)
+            if (string.IsNullOrEmpty(email))
             {
-                var httpResponse = req.CreateResponse(HttpStatusCode.NotFound);
-                await httpResponse.WriteStringAsync("UserId is missing");
+                var httpResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                await httpResponse.WriteStringAsync("Email parameter is missing or empty");
                 return httpResponse;
             }
 
             try
             {
-                ItemResponse<UserInfo> response = await _container.ReadItemAsync<UserInfo>(userId, new PartitionKey(userId));
+                string query = $"SELECT * FROM c WHERE c.email = @email";
+                QueryDefinition queryDefinition = new QueryDefinition(query).WithParameter("@email", email);
+                using FeedIterator<UserInfo> queryIterator = _container.GetItemQueryIterator<UserInfo>(queryDefinition);
+
+                UserInfo user = null;
+                if (queryIterator.HasMoreResults)
+                {
+                    var response = await queryIterator.ReadNextAsync();
+                    user = response.FirstOrDefault();
+                }
+
+                if (user == null)
+                {
+                    var response = req.CreateResponse(HttpStatusCode.NotFound);
+                    await response.WriteStringAsync("User not found");
+                    return response;
+                }
 
                 var httpResponse = req.CreateResponse(HttpStatusCode.OK);
-                await httpResponse.WriteAsJsonAsync(response.Resource);
+                await httpResponse.WriteAsJsonAsync(user);
                 return httpResponse;
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
                 var httpResponse = req.CreateResponse(HttpStatusCode.NotFound);
-                await httpResponse.WriteStringAsync("User not found" + ex.Message);
+                await httpResponse.WriteStringAsync("User not found: " + ex.Message);
+                return httpResponse;
+            }
+            catch (Exception ex)
+            {
+                var httpResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
+                await httpResponse.WriteStringAsync("An error occurred: " + ex.Message);
                 return httpResponse;
             }
         }
@@ -92,7 +114,7 @@ namespace ChatAppFunction
                 Guid id = Guid.NewGuid();
                 user.Id = id.ToString();
 
-                ItemResponse<UserInfo> response = await _container.CreateItemAsync(user, new PartitionKey(user.Id));
+                ItemResponse<UserInfo> response = await _container.CreateItemAsync(user, new PartitionKey(user.Email));
                 var successResponse = req.CreateResponse(HttpStatusCode.Created);
                 await successResponse.WriteAsJsonAsync(response.Resource);
                 return successResponse;
