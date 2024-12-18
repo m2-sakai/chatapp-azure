@@ -6,7 +6,6 @@ import { fetchUserData } from '../features/users/api/userapi';
 import { fetchToken } from '../features/chats/api/chatapi';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { v4 as uuidv4 } from 'uuid';
-import useWebSocket from '../hooks/useWebsocket';
 
 export const clientLoader = async () => {
   try {
@@ -26,24 +25,38 @@ export default function Chat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const socketRef = useRef<ReconnectingWebSocket>();
-  const [url, setUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const getToken = async () => {
+    const negotiateAndConnect = async () => {
+      if (socketRef.current) {
+        return;
+      }
       try {
         const url = await fetchToken();
-        setUrl(url);
+        const websocket = new ReconnectingWebSocket(url);
+        socketRef.current = websocket;
+
+        websocket.onopen = () => {
+          // console.log('WebSocket接続がオープンしました。');
+        };
+
+        websocket.onmessage = (event) => {
+          const messageData = JSON.parse(event.data);
+          setMessages((prevMessages) => [...prevMessages, messageData]);
+        };
       } catch (error) {
-        console.error('Error fetching token:', error);
+        console.error('WebSocket接続中にエラーが発生しました:', error);
       }
     };
 
-    getToken();
-  }, []);
+    negotiateAndConnect();
 
-  useWebSocket(url, (message: ChatMessage) => {
-    setMessages((prevMessages) => [...prevMessages, message]);
-  });
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
+  }, []);
 
   const sendMessage = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -56,12 +69,13 @@ export default function Chat() {
       };
 
       socketRef.current.send(
-        JSON.stringify({
-          type: 'event',
-          event: 'createChat',
-          dataType: 'json',
-          data: message,
-        })
+        // JSON.stringify({
+        //   type: 'event',
+        //   event: 'createChat',
+        //   dataType: 'json',
+        //   data: message,
+        // })
+        JSON.stringify(message)
       );
       setInput('');
     }
