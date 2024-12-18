@@ -22,7 +22,7 @@ param kind string = 'StorageV2'
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = 'Disabled'
+param publicNetworkAccess string = 'Enabled'
 
 @description('IPアドレスのACL規則')
 param ipRules array = []

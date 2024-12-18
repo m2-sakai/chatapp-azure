@@ -53,36 +53,36 @@ param userAssignedIdentityName string
 param roleDefinitionId string = '00000000-0000-0000-0000-000000000002'
 
 /*** resource/module: Cosmos DB ***/
-// module cosmosModule '../../modules/cosmos-db/cosmos_module.bicep' = {
-//   name: '${cosmosDbName}_Deployment'
-//   params: {
-//     location: location
-//     tag: tag
-//     cosmosDbName: cosmosDbName
-//   }
-//   dependsOn: []
-// }
+module cosmosModule '../../modules/cosmos-db/cosmos_module.bicep' = {
+  name: '${cosmosDbName}_Deployment'
+  params: {
+    location: location
+    tag: tag
+    cosmosDbName: cosmosDbName
+  }
+  dependsOn: []
+}
 
 /*** resource/module: Private Endpoint ***/
-// module cosmosPepModule '../../modules/private-endpoint/pep_module.bicep' = {
-//   name: '${privateEndpointName}_Deployment'
-//   params: {
-//     location: location
-//     tag: tag
-//     privateEndpointName: privateEndpointName
-//     privateLinkServiceId: cosmosModule.outputs.cosmosDbId
-//     privateLinkServiceGroupIds: privateLinkServiceGroupIds
-//     privateLinkServiceConnectionState: privateLinkServiceConnectionState
-//     assignStaticPrivateIP: assignStaticPrivateIP
-//     privateIPAddressInfo: privateIPAddressInfo
-//     virtualNetworkName: virtualNetworkName
-//     subnetName: privateEndpointSubnetName
-//     privateDnsZoneName: privateDnsZoneName
-//   }
-//   dependsOn: [
-//     cosmosModule
-//   ]
-// }
+module cosmosPepModule '../../modules/private-endpoint/pep_module.bicep' = {
+  name: '${privateEndpointName}_Deployment'
+  params: {
+    location: location
+    tag: tag
+    privateEndpointName: privateEndpointName
+    privateLinkServiceId: cosmosModule.outputs.cosmosDbId
+    privateLinkServiceGroupIds: privateLinkServiceGroupIds
+    privateLinkServiceConnectionState: privateLinkServiceConnectionState
+    assignStaticPrivateIP: assignStaticPrivateIP
+    privateIPAddressInfo: privateIPAddressInfo
+    virtualNetworkName: virtualNetworkName
+    subnetName: privateEndpointSubnetName
+    privateDnsZoneName: privateDnsZoneName
+  }
+  dependsOn: [
+    cosmosModule
+  ]
+}
 
 /*** resource/module: Role Assignment ***/
 module roleModule '../../modules/cosmos-db/cosmos_add-role_module.bicep' = {
@@ -92,7 +92,7 @@ module roleModule '../../modules/cosmos-db/cosmos_add-role_module.bicep' = {
     userAssignedIdentityName: userAssignedIdentityName
     roleDefinitionId: roleDefinitionId
   }
-  // dependsOn: [
-  //   cosmosModule
-  // ]
+  dependsOn: [
+    cosmosModule
+  ]
 }

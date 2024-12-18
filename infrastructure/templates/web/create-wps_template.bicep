@@ -94,7 +94,9 @@ module wpsHubModule '../../modules/web-pubsub/wps_add-hub_module.bicep' = {
     hubName: hubName
     urlTemplate: urlTemplate
   }
-  dependsOn: []
+  dependsOn: [
+    wpsModule
+  ]
 }
 
 /*** resource/module: Private Endpoint ***/
