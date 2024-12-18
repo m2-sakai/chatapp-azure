@@ -77,7 +77,7 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
     }
     networkAclBypassResourceIds: []
     capacity: {
-      totalThroughputLimit: 1000
+      totalThroughputLimit: 2000
     }
   }
 }

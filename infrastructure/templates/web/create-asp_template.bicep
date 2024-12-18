@@ -20,10 +20,10 @@ param skuName string = 'B1'
 param skuCapacity int = 1
 
 @description('OSの種類')
-param kind string = 'linux'
+param kind string = 'app'
 
 @description('OSの種類（Linuxの場合: true、Windowsの場合: false）')
-param reserved bool = true
+param reserved bool = false
 
 /*** resource/module: App Service Plan ***/
 module aspModule '../../modules/app-service-plan/asp_module.bicep' = {

@@ -118,6 +118,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
             value: existingApplicationInsights.properties.InstrumentationKey
           }
           {
+            name: 'AZURE_CLIENT_ID'
+            value: existingUserAssignedIdentity.properties.clientId
+          }
+          {
             name: 'FUNCTIONS_EXTENSION_VERSION'
             value: '~4'
           }

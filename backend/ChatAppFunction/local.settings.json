@@ -4,11 +4,15 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "COSMOS_ENDPOINT": "https://localhost:8081/",
+    "COSMOS_CONNECT_MSI": "false",
+    "COSMOS_CONNECTION_STRING": "xxx",
     "COSMOS_DATABASE": "SampleDB",
     "COSMOS_USER_CONTAINER": "UserContainer",
     "COSMOS_CHAT_CONTAINER": "ChatContainer",
-    "WEBPUBSUB_ENDPOINT": "https://wps-adcl-test-je-99.webpubsub.azure.com/",
-    "WEBPUBSUB_HUB": "chatroom"
+    "WEBPUBSUB_ENDPOINT": "https://wps-adcl-test-je-01.webpubsub.azure.com/",
+    "WEBPUBSUB_HUB": "chatroom",
+    "WEBPUBSUB_CONNECT_MSI": "false",
+    "WEBPUBSUB_ACCESSKEY": "xxx"
   },
   "Host": {
     "CORS": "*"

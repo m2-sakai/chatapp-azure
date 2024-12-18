@@ -9,7 +9,7 @@ param cosmosDbName string
 param userAssignedIdentityName string
 
 @description('マネージドIDに付与するロールID')
-param roleDefinitionId string = '5bd9cd88-fe45-4216-938b-f97437e15450'
+param roleDefinitionId string = '00000000-0000-0000-0000-000000000002'
 
 var roleAssignmentName = guid(userAssignedIdentityName,roleDefinitionId, resourceGroup().id)
 
@@ -21,12 +21,12 @@ resource existingUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIde
   name: userAssignedIdentityName
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource roleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2023-04-15' = {
   name: roleAssignmentName
-  scope: existingCosmosDb
+  parent: existingCosmosDb
   properties: {
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
+    roleDefinitionId: '/${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.DocumentDB/databaseAccounts/${cosmosDbName}/sqlRoleDefinitions/${roleDefinitionId}'
     principalId: existingUserAssignedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
+    scope: existingCosmosDb.id
   }
 }

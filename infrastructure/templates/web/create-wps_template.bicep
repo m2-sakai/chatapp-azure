@@ -56,6 +56,13 @@ param privateEndpointSubnetName string
 @description('プライベートDNSゾーンのリソース情報')
 param privateDnsZoneName string
 
+/*** param: Hub ***/
+@description('Hub のリソース名')
+param hubName string
+
+@description('イベントハンドラーのURL')
+param urlTemplate string
+
 /*** param: Role Assignment ***/
 @description('マネージドIDのリソース名')
 @minLength(3)
@@ -75,6 +82,17 @@ module wpsModule '../../modules/web-pubsub/wps_module.bicep' = {
     skuName: skuName
     skuTier: skuTier
     publicNetworkAccess: publicNetworkAccess
+  }
+  dependsOn: []
+}
+
+/*** resource/module: HubHub ***/
+module wpsHubModule '../../modules/web-pubsub/wps_add-hub_module.bicep' = {
+  name: '${hubName}_Deployment'
+  params: {
+    webPubSubName: webPubSubName
+    hubName: hubName
+    urlTemplate: urlTemplate
   }
   dependsOn: []
 }

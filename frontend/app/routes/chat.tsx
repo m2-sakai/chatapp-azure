@@ -6,6 +6,7 @@ import { fetchUserData } from '../features/users/api/userapi';
 import { fetchToken } from '../features/chats/api/chatapi';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { v4 as uuidv4 } from 'uuid';
+import useWebSocket from '../hooks/useWebsocket';
 
 export const clientLoader = async () => {
   try {
@@ -25,36 +26,24 @@ export default function Chat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const socketRef = useRef<ReconnectingWebSocket>();
+  const [url, setUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const negotiateAndConnect = async () => {
+    const getToken = async () => {
       try {
         const url = await fetchToken();
-        const websocket = new ReconnectingWebSocket(url);
-        socketRef.current = websocket;
-
-        websocket.onopen = () => {
-          console.log('WebSocket接続がオープンしました。');
-        };
-
-        websocket.onmessage = (event) => {
-          const messageData = JSON.parse(event.data);
-          console.log(messageData);
-          setMessages((prevMessages) => [...prevMessages, messageData]);
-        };
+        setUrl(url);
       } catch (error) {
-        console.error('WebSocket接続中にエラーが発生しました:', error);
+        console.error('Error fetching token:', error);
       }
     };
 
-    negotiateAndConnect();
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-      }
-    };
+    getToken();
   }, []);
+
+  useWebSocket(url, (message: ChatMessage) => {
+    setMessages((prevMessages) => [...prevMessages, message]);
+  });
 
   const sendMessage = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -66,7 +55,14 @@ export default function Chat() {
         timestamp: new Date().toISOString(),
       };
 
-      socketRef.current.send(JSON.stringify(message));
+      socketRef.current.send(
+        JSON.stringify({
+          type: 'event',
+          event: 'createChat',
+          dataType: 'json',
+          data: message,
+        })
+      );
       setInput('');
     }
   };

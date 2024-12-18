@@ -15,5 +15,9 @@ param virtualNetworkName = 'vnet-adcl-test-je-01'
 param privateEndpointSubnetName = 'sub-1_0'
 param privateDnsZoneName = 'privatelink.webpubsub.azure.com'
 
+/*** param: Hub ***/
+param hubName = 'chatroom'
+param urlTemplate = 'https://func-adcl-test-je-01.azurewebsites.net/api/SaveChatMessage'
+
 /*** param: Role Assignment ***/
 param userAssignedIdentityName = 'id-adcl-test-je-01'

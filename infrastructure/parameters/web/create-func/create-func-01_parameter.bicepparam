@@ -4,13 +4,39 @@ using '../../../templates/web/create-func_template.bicep'
 param tag = {}
 
 /*** param: Functions ***/
-param functionAppName = 'func-adcl-test-je-01'
+param functionAppName = 'func-adcl-test-je-02'
 param appServicePlanName = 'asp-adcl-test-je-01'
 param userAssignedIdentityName = 'id-adcl-test-je-01'
 param virtualNetworkName = 'vnet-adcl-test-je-01'
 param subnetName = 'sub-2_0'
 param storageAccountBlobStorageName = 'stadcltestje01'
 param applicationInsightsName = 'appi-adcl-test-je-01'
+param aplAppSettings = [
+  {
+    name: 'COSMOS_CHAT_CONTAINER'
+    value: 'ChatContainer'
+  }
+  {
+    name: 'COSMOS_DATABASE'
+    value: 'SampleDB'
+  }
+  {
+    name: 'COSMOS_ENDPOINT'
+    value: 'https://cosmos-adcl-test-je-01.documents.azure.com:443/'
+  }
+  {
+    name: 'COSMOS_USER_CONTAINER'
+    value: 'UserContainer'
+  }
+  {
+    name: 'WEBPUBSUB_ENDPOINT'
+    value: 'https://wps-adcl-test-je-01.webpubsub.azure.com'
+  }
+  {
+    name: 'WEBPUBSUB_HUB'
+    value: 'chatroom'
+  }
+]
 
 /*** param: Private Endpoint ***/
 param privateEndpointName = 'pep-adcl-test-je-func-01'

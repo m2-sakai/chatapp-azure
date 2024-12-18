@@ -29,6 +29,8 @@ namespace ChatAppFunction
             _logger.LogInformation("Processing SaveChatMessage Functions.");
 
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            _logger.LogInformation($"{requestBody}");
+
             var data = JsonConvert.DeserializeObject<ChatMessage>(requestBody);
 
             if (data == null || string.IsNullOrEmpty(data.Id) || string.IsNullOrEmpty(data.Content) || string.IsNullOrEmpty(data.SenderEmail))
@@ -37,8 +39,6 @@ namespace ChatAppFunction
                 await badRequestResponse.WriteStringAsync("Invalid input");
                 return badRequestResponse;
             }
-
-            data.Timestamp = DateTime.Now.ToString("o");
 
             try
             {
