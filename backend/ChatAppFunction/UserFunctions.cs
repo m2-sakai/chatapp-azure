@@ -111,13 +111,28 @@ namespace ChatAppFunction
                 }
 
                 var user = JsonConvert.DeserializeObject<UserInfo>(requestBody);
-                Guid id = Guid.NewGuid();
-                user.Id = id.ToString();
 
-                ItemResponse<UserInfo> response = await _container.CreateItemAsync(user, new PartitionKey(user.Email));
-                var successResponse = req.CreateResponse(HttpStatusCode.Created);
-                await successResponse.WriteAsJsonAsync(response.Resource);
-                return successResponse;
+                var query = new QueryDefinition("SELECT * FROM c WHERE c.email = @email")
+                            .WithParameter("@email", user.Email);
+                var iterator = _container.GetItemQueryIterator<UserInfo>(query);
+                var existingUser = (await iterator.ReadNextAsync()).FirstOrDefault();
+
+                if (existingUser != null)
+                {
+                    user.Id = existingUser.Id;
+                    var response = await _container.ReplaceItemAsync(user, user.Id, new PartitionKey(user.Email));
+                    var successResponse = req.CreateResponse(HttpStatusCode.OK);
+                    await successResponse.WriteAsJsonAsync(response.Resource);
+                    return successResponse;
+                }
+                else
+                {
+                    user.Id = Guid.NewGuid().ToString();
+                    var response = await _container.CreateItemAsync(user, new PartitionKey(user.Email));
+                    var successResponse = req.CreateResponse(HttpStatusCode.Created);
+                    await successResponse.WriteAsJsonAsync(response.Resource);
+                    return successResponse;
+                }
             }
             catch (JsonException ex)
             {

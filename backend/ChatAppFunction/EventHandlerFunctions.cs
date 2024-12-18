@@ -31,7 +31,7 @@ namespace ChatAppFunction
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var data = JsonConvert.DeserializeObject<ChatMessage>(requestBody);
 
-            if (data == null || string.IsNullOrEmpty(data.Id) || string.IsNullOrEmpty(data.Content) || string.IsNullOrEmpty(data.SenderId))
+            if (data == null || string.IsNullOrEmpty(data.Id) || string.IsNullOrEmpty(data.Content) || string.IsNullOrEmpty(data.SenderEmail))
             {
                 var badRequestResponse = req.CreateResponse(System.Net.HttpStatusCode.BadRequest);
                 await badRequestResponse.WriteStringAsync("Invalid input");
@@ -42,7 +42,7 @@ namespace ChatAppFunction
 
             try
             {
-                await _container.CreateItemAsync(data, new PartitionKey(data.SenderId));
+                await _container.CreateItemAsync(data, new PartitionKey(data.SenderEmail));
                 var okResponse = req.CreateResponse(System.Net.HttpStatusCode.OK);
                 await okResponse.WriteStringAsync("Message stored successfully");
                 return okResponse;

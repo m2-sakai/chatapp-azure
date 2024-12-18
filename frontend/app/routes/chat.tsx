@@ -1,14 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import { json, redirect, useLoaderData } from '@remix-run/react';
+import { redirect, useLoaderData } from '@remix-run/react';
 import { Button } from '../components/ui/button';
 import { ChatMessage } from '../features/chats/model/ChatMessage';
 import { fetchUserData } from '../features/users/api/userapi';
+import { fetchToken } from '../features/chats/api/chatapi';
+import ReconnectingWebSocket from 'reconnecting-websocket';
+import { v4 as uuidv4 } from 'uuid';
 
 export const clientLoader = async () => {
   try {
     const email = localStorage.getItem('email');
     const userData = await fetchUserData(email);
-    return json(userData);
+    return {
+      userData,
+    };
   } catch (error) {
     console.error(`There was an error fetching the user data: ${error}`);
     return redirect(`/`);
@@ -16,18 +21,16 @@ export const clientLoader = async () => {
 };
 
 export default function Chat() {
-  const { userId, name } = useLoaderData<typeof clientLoader>();
+  const { userData } = useLoaderData<typeof clientLoader>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
-  const socketRef = useRef<WebSocket | null>(null);
+  const socketRef = useRef<ReconnectingWebSocket>();
 
   useEffect(() => {
     const negotiateAndConnect = async () => {
       try {
-        const response = await fetch('http://localhost:7147/api/GetToken');
-        const { url } = await response.json();
-
-        const websocket = new WebSocket(url);
+        const url = await fetchToken();
+        const websocket = new ReconnectingWebSocket(url);
         socketRef.current = websocket;
 
         websocket.onopen = () => {
@@ -56,9 +59,10 @@ export default function Chat() {
   const sendMessage = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       const message: ChatMessage = {
-        id: Date.now(),
+        id: uuidv4(),
         content: input,
-        senderId: userId,
+        senderName: userData.name,
+        senderEmail: userData.email,
         timestamp: new Date().toISOString(),
       };
 
@@ -69,12 +73,15 @@ export default function Chat() {
 
   return (
     <div className='flex flex-col justify-between h-screen'>
-      <div className='p-4 bg-blue-600 text-white'>チャット - {name}</div>
+      <div className='p-4 bg-blue-600 text-white'>チャットルーム</div>
 
       <div className='flex-grow overflow-y-auto p-4'>
         {messages.map((message) => (
-          <div key={message.id} className={`flex ${message.senderId === userId ? 'justify-start' : 'justify-end'} mb-2`}>
-            <div className={`rounded-lg p-2 max-w-xs shadow ${message.senderId === userId ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>{message.content}</div>
+          <div key={message.id} className={`mb-4 ${message.senderEmail !== userData.email ? 'text-left' : 'text-right'}`}>
+            <div className='font-semibold'>{message.senderName}</div>
+            <div key={message.id} className={`flex ${message.senderEmail !== userData.email ? 'justify-start' : 'justify-end'} mb-2`}>
+              <div className={`rounded-lg px-4 py-2 max-w-xs shadow ${message.senderEmail !== userData.email ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>{message.content}</div>
+            </div>
           </div>
         ))}
       </div>

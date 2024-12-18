@@ -8,7 +8,7 @@
     "COSMOS_USER_CONTAINER": "UserContainer",
     "COSMOS_CHAT_CONTAINER": "ChatContainer",
     "WEBPUBSUB_ENDPOINT": "https://wps-adcl-test-je-99.webpubsub.azure.com/",
-    "WEBPUBSUB_HUB": "chat"
+    "WEBPUBSUB_HUB": "chatroom"
   },
   "Host": {
     "CORS": "*"

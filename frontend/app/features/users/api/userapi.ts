@@ -1,6 +1,7 @@
+import { UserInfo } from '../model/UserInfo';
 import { API_ROUTES } from './route';
 
-export async function fetchUserData(email: string | null): Promise<any> {
+export async function fetchUserData(email: string | null): Promise<UserInfo> {
   if (!email) {
     throw new Error('Email is required to fetch user data');
   }
