@@ -56,20 +56,20 @@ param securityRules = [
   //   sourceAddressPrefixes: []
   //   destinationAddressPrefixes: []
   // }
-  {
-    name: 'Deny_Out_All'
-    description: 'Deny_Out_All'
-    protocol: '*'
-    sourcePortRange: '*'
-    destinationPortRange: '*'
-    sourceAddressPrefix: '*'
-    destinationAddressPrefix: '*'
-    access: 'Deny'
-    priority: 1000
-    direction: 'Outbound'
-    sourcePortRanges: []
-    destinationPortRanges: []
-    sourceAddressPrefixes: []
-    destinationAddressPrefixes: []
-  }
+  // {
+  //   name: 'Deny_Out_All'
+  //   description: 'Deny_Out_All'
+  //   protocol: '*'
+  //   sourcePortRange: '*'
+  //   destinationPortRange: '*'
+  //   sourceAddressPrefix: '*'
+  //   destinationAddressPrefix: '*'
+  //   access: 'Deny'
+  //   priority: 1000
+  //   direction: 'Outbound'
+  //   sourcePortRanges: []
+  //   destinationPortRanges: []
+  //   sourceAddressPrefixes: []
+  //   destinationAddressPrefixes: []
+  // }
 ]

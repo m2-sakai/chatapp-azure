@@ -40,20 +40,20 @@ param securityRules = [
     sourceAddressPrefixes: []
     destinationAddressPrefixes: []
   }
-  {
-    name: 'Deny_In_All'
-    description: 'Deny_In_All'
-    protocol: '*'
-    sourcePortRange: '*'
-    destinationPortRange: '*'
-    sourceAddressPrefix: '*'
-    destinationAddressPrefix: '*'
-    access: 'Deny'
-    priority: 1000
-    direction: 'Inbound'
-    sourcePortRanges: []
-    destinationPortRanges: []
-    sourceAddressPrefixes: []
-    destinationAddressPrefixes: []
-  }
+  // {
+  //   name: 'Deny_In_All'
+  //   description: 'Deny_In_All'
+  //   protocol: '*'
+  //   sourcePortRange: '*'
+  //   destinationPortRange: '*'
+  //   sourceAddressPrefix: '*'
+  //   destinationAddressPrefix: '*'
+  //   access: 'Deny'
+  //   priority: 1000
+  //   direction: 'Inbound'
+  //   sourcePortRanges: []
+  //   destinationPortRanges: []
+  //   sourceAddressPrefixes: []
+  //   destinationAddressPrefixes: []
+  // }
 ]
