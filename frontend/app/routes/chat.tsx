@@ -39,7 +39,7 @@ export default function Chat() {
       }
       try {
         const accessToken = await fetchToken();
-        const websocket = new ReconnectingWebSocket(`${API_ROUTES.GET_TOKEN}?access_token=${accessToken}`);
+        const websocket = new ReconnectingWebSocket(`${API_ROUTES.WSS_CONNECT}?access_token=${accessToken}`);
         socketRef.current = websocket;
 
         websocket.onopen = () => {
