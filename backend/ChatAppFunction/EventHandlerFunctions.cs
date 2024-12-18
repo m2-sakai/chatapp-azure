@@ -6,6 +6,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace ChatAppFunction
 {
@@ -25,52 +26,71 @@ namespace ChatAppFunction
             _logger = logger;
         }
 
-        [Function("SaveChatMessage")]
-        public async Task<HttpResponseData> SaveChatMessage([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat")] HttpRequestData req)
+        [Function("PublishSaveMessage")]
+        [WebPubSubOutput(Hub = "chatroom")]
+        public async Task<UserEventResponse> PublishSaveMessage([WebPubSubTrigger("chatroom", WebPubSubEventType.User, "message")] UserEventRequest request)
         {
-            _logger.LogInformation("Processing SaveChatMessage Functions.");
+            _logger.LogInformation("Processing MessageEventHandler Functions.");
 
-            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            _logger.LogInformation($"{requestBody}");
-
-            var data = JsonConvert.DeserializeObject<ChatMessage>(requestBody);
-
-            if (data == null || string.IsNullOrEmpty(data.Id) || string.IsNullOrEmpty(data.Content) || string.IsNullOrEmpty(data.SenderEmail))
-            {
-                var badRequestResponse = req.CreateResponse(System.Net.HttpStatusCode.BadRequest);
-                await badRequestResponse.WriteStringAsync("Invalid input");
-                return badRequestResponse;
-            }
+            var message = JsonConvert.DeserializeObject<ChatMessage>(request.Data.ToString());
 
             try
             {
-                await _container.CreateItemAsync(data, new PartitionKey(data.SenderEmail));
-                var okResponse = req.CreateResponse(System.Net.HttpStatusCode.OK);
-                await okResponse.WriteStringAsync("Message stored successfully");
-                return okResponse;
+                // DBにチャットメッセージを保存
+                await _container.CreateItemAsync(message, new PartitionKey(message.SenderEmail));
+
+                // ブロードキャスト
+                await _webPubSubServiceClient.SendToAllAsync(RequestContent.Create(message), ContentType.ApplicationJson);
             }
-            catch (CosmosException ex)
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "JSON Deserialization Error");
+            }
+            catch (Exception ex)
             {
                 _logger.LogError($"Error storing message: {ex.Message}");
-
-                var errorResponse = req.CreateResponse(System.Net.HttpStatusCode.InternalServerError);
-                await errorResponse.WriteStringAsync("Error storing message");
-                return errorResponse;
             }
+
+            return new UserEventResponse
+            {
+            };
         }
 
-        [Function("PublishSaveMessage")]
-        [WebPubSubOutput(Hub = "chatroom")]
-        public SendToAllAction PublishSaveMessage([WebPubSubTrigger("chatroom", WebPubSubEventType.User, "message")] UserEventRequest request)
+        // テスト用ブロードキャスト用Functions
+        [Function("PostChat")]
+        public async Task<HttpResponseData> PostChats([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat")] HttpRequestData req)
         {
-            _logger.LogInformation("Processing MessageEventHandler Functions.");
-            _logger.LogInformation($"{request.Data.ToString()}");
+            _logger.LogInformation("Processing PostChat Functions.");
 
-            return new SendToAllAction
+            try
             {
-                Data = BinaryData.FromString($"[{request.ConnectionContext.UserId}] {request.Data.ToString()}"),
-                DataType = request.DataType
-            };
+                string requestBody;
+                using (StreamReader reader = new StreamReader(req.Body))
+                {
+                    requestBody = await reader.ReadToEndAsync();
+                }
+
+                var message = JsonConvert.DeserializeObject<ChatMessage>(requestBody);
+
+                await _webPubSubServiceClient.SendToAllAsync(RequestContent.Create(message), ContentType.ApplicationJson);
+
+                var successResponse = req.CreateResponse(HttpStatusCode.Created);
+                return successResponse;
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "JSON Deserialization Error");
+                var errorResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                await errorResponse.WriteStringAsync("Invalid JSON format.");
+                return errorResponse;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error");
+                var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
+                await errorResponse.WriteStringAsync("An unexpected error occurred.");
+                return errorResponse;
+            }
         }
     }
 }

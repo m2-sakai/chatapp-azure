@@ -48,42 +48,5 @@ namespace ChatAppFunction
             await response.WriteAsJsonAsync(chats);
             return response;
         }
-
-        // テスト用ブロードキャスト用Functions
-        [Function("PostChat")]
-        public async Task<HttpResponseData> PostChats([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat")] HttpRequestData req)
-        {
-            _logger.LogInformation("Processing PostChat Functions.");
-
-            try
-            {
-                string requestBody;
-                using (StreamReader reader = new StreamReader(req.Body))
-                {
-                    requestBody = await reader.ReadToEndAsync();
-                }
-
-                var message = JsonConvert.DeserializeObject<ChatMessage>(requestBody);
-
-                await _webPubSubServiceClient.SendToAllAsync(RequestContent.Create(message), ContentType.ApplicationJson);
-
-                var successResponse = req.CreateResponse(HttpStatusCode.Created);
-                return successResponse;
-            }
-            catch (JsonException ex)
-            {
-                _logger.LogError(ex, "JSON Deserialization Error");
-                var errorResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-                await errorResponse.WriteStringAsync("Invalid JSON format.");
-                return errorResponse;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error");
-                var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
-                await errorResponse.WriteStringAsync("An unexpected error occurred.");
-                return errorResponse;
-            }
-        }
     }
 }
