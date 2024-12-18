@@ -4,6 +4,8 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using ChatAppFunction.Model;
+using System.Web;
+using System;
 
 namespace ChatAppFunction
 {
@@ -19,16 +21,18 @@ namespace ChatAppFunction
         }
 
         [Function("GetToken")]
-        public async Task<HttpResponseData> GetToken([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
+        public async Task<HttpResponseData> GetToken([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "token")] HttpRequestData req)
         {
             _logger.LogInformation("Processing GetToken Functions.");
 
             var url = await _webPubSubServiceClient.GetClientAccessUriAsync();
+            var query = HttpUtility.ParseQueryString(url.Query);
+            string accessToken = query["access_token"];
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             var res = new TokenResponse()
             {
-                Url = url.ToString()
+                AccessToken = accessToken
             };
             await response.WriteAsJsonAsync(res);
             return response;

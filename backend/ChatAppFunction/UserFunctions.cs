@@ -24,7 +24,7 @@ namespace ChatAppFunction
         }
 
         [Function("GetUser")]
-        public async Task<HttpResponseData> GetUser([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
+        public async Task<HttpResponseData> GetUser([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequestData req)
         {
             _logger.LogInformation("Processing GetUser Functions.");
 
@@ -76,7 +76,7 @@ namespace ChatAppFunction
         }
 
         [Function("GetUsers")]
-        public async Task<HttpResponseData> GetUsers([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
+        public async Task<HttpResponseData> GetUsers([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "users")] HttpRequestData req)
         {
             _logger.LogInformation("Processing GetUsers Functions.");
 
@@ -98,7 +98,7 @@ namespace ChatAppFunction
         }
 
         [Function("InsertUser")]
-        public async Task<HttpResponseData> InsertUser([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req)
+        public async Task<HttpResponseData> InsertUser([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "user")] HttpRequestData req)
         {
             _logger.LogInformation("Processing InsertUser Functions.");
 

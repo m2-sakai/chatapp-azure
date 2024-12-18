@@ -3,9 +3,10 @@ import { redirect, useLoaderData } from '@remix-run/react';
 import { Button } from '../components/ui/button';
 import { ChatMessage } from '../features/chats/model/ChatMessage';
 import { fetchUserData } from '../features/users/api/userapi';
-import { fetchToken } from '../features/chats/api/chatapi';
+import { fetchChatList, fetchToken } from '../features/chats/api/chatapi';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { v4 as uuidv4 } from 'uuid';
+import { API_ROUTES } from '../features/chats/api/route';
 
 export const clientLoader = async () => {
   try {
@@ -27,17 +28,22 @@ export default function Chat() {
   const socketRef = useRef<ReconnectingWebSocket>();
 
   useEffect(() => {
+    const fetchChats = async () => {
+      const allChats = await fetchChatList();
+      setMessages(allChats);
+    };
+
     const negotiateAndConnect = async () => {
       if (socketRef.current) {
         return;
       }
       try {
-        const url = await fetchToken();
-        const websocket = new ReconnectingWebSocket(url);
+        const accessToken = await fetchToken();
+        const websocket = new ReconnectingWebSocket(`${API_ROUTES.GET_TOKEN}?access_token=${accessToken}`);
         socketRef.current = websocket;
 
         websocket.onopen = () => {
-          // console.log('WebSocket接続がオープンしました。');
+          console.log('WebSocket接続がオープンしました。');
         };
 
         websocket.onmessage = (event) => {
@@ -49,6 +55,7 @@ export default function Chat() {
       }
     };
 
+    fetchChats();
     negotiateAndConnect();
 
     return () => {
@@ -67,6 +74,8 @@ export default function Chat() {
         senderEmail: userData.email,
         timestamp: new Date().toISOString(),
       };
+
+      console.log(message);
 
       socketRef.current.send(
         // JSON.stringify({

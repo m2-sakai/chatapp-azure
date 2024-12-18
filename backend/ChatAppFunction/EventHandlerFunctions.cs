@@ -1,6 +1,6 @@
+using Azure.Core;
+using Azure.Messaging.WebPubSub;
 using ChatAppFunction.Model;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -13,18 +13,20 @@ namespace ChatAppFunction
     {
         private readonly CosmosClient _cosmosClient;
         private readonly Container _container;
+        private readonly WebPubSubServiceClient _webPubSubServiceClient;
         private readonly ILogger<EventHandlerFunctions> _logger;
 
-        public EventHandlerFunctions(CosmosClient cosmosClient, ILogger<EventHandlerFunctions> logger)
+        public EventHandlerFunctions(CosmosClient cosmosClient, WebPubSubServiceClient webPubSubServiceClient, ILogger<EventHandlerFunctions> logger)
         {
             _cosmosClient = cosmosClient;
             var database = _cosmosClient.GetDatabase(Environment.GetEnvironmentVariable("COSMOS_DATABASE"));
             _container = database.GetContainer(Environment.GetEnvironmentVariable("COSMOS_CHAT_CONTAINER"));
+            _webPubSubServiceClient = webPubSubServiceClient;
             _logger = logger;
         }
 
         [Function("SaveChatMessage")]
-        public async Task<HttpResponseData> SaveChatMessage([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req)
+        public async Task<HttpResponseData> SaveChatMessage([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat")] HttpRequestData req)
         {
             _logger.LogInformation("Processing SaveChatMessage Functions.");
 
@@ -55,6 +57,20 @@ namespace ChatAppFunction
                 await errorResponse.WriteStringAsync("Error storing message");
                 return errorResponse;
             }
+        }
+
+        [Function("PublishSaveMessage")]
+        [WebPubSubOutput(Hub = "chatroom")]
+        public SendToAllAction PublishSaveMessage([WebPubSubTrigger("chatroom", WebPubSubEventType.User, "message")] UserEventRequest request)
+        {
+            _logger.LogInformation("Processing MessageEventHandler Functions.");
+            _logger.LogInformation($"{request.Data.ToString()}");
+
+            return new SendToAllAction
+            {
+                Data = BinaryData.FromString($"[{request.ConnectionContext.UserId}] {request.Data.ToString()}"),
+                DataType = request.DataType
+            };
         }
     }
 }

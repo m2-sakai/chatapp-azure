@@ -228,7 +228,7 @@ resource functionAppWeb 'Microsoft.Web/sites/config@2023-12-01' = {
     publicNetworkAccess: publicNetworkAccess
     cors: {
       allowedOrigins: [
-        'https://portal.azure.com'
+        '*'
       ]
       supportCredentials: false
     }

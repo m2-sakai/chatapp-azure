@@ -5,8 +5,8 @@ namespace ChatAppFunction.Model
 {
     public class TokenResponse
     {
-        [JsonProperty("url")]
-        [JsonPropertyName("url")]
-        public string Url { get; set; }
+        [JsonProperty("accessToken")]
+        [JsonPropertyName("accessToken")]
+        public string AccessToken { get; set; }
     }
 }

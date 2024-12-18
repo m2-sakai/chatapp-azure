@@ -28,7 +28,7 @@ namespace ChatAppFunction
         }
 
         [Function("GetChats")]
-        public async Task<HttpResponseData> GetChats([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
+        public async Task<HttpResponseData> GetChats([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "chats")] HttpRequestData req)
         {
             _logger.LogInformation("Processing GetChats Functions.");
 
@@ -51,7 +51,7 @@ namespace ChatAppFunction
 
         // テスト用ブロードキャスト用Functions
         [Function("PostChat")]
-        public async Task<HttpResponseData> PostChats([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req)
+        public async Task<HttpResponseData> PostChats([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chat")] HttpRequestData req)
         {
             _logger.LogInformation("Processing PostChat Functions.");
 
