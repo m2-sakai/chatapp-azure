@@ -16,15 +16,19 @@ var host = new HostBuilder()
         services.AddSingleton((s) =>
         {
             var isConnectMsi = Boolean.Parse(Environment.GetEnvironmentVariable("COSMOS_CONNECT_MSI"));
+            var retryPolicy = new CosmosClientOptions()
+            {
+                MaxRetryAttemptsOnRateLimitedRequests = 1
+            };
             if (isConnectMsi)
             {
                 var endpoint = Environment.GetEnvironmentVariable("COSMOS_ENDPOINT");
-                return new CosmosClient(endpoint, new DefaultAzureCredential());
+                return new CosmosClient(endpoint, new DefaultAzureCredential(), retryPolicy);
 
             } else
             {
                 var connectionString = Environment.GetEnvironmentVariable("COSMOS_CONNECTION_STRING");
-                return new CosmosClient(connectionString);
+                return new CosmosClient(connectionString, retryPolicy);
             }
         });
 
