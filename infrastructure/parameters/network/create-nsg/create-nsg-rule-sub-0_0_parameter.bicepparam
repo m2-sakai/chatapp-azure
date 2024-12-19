@@ -31,7 +31,7 @@ param securityRules = [
     sourcePortRange: '*'
     destinationPortRange: null
     sourceAddressPrefix: 'Internet'
-    destinationAddressPrefix: '*'
+    destinationAddressPrefix: 'VirtualNetwork'
     access: 'Allow'
     priority: 200
     direction: 'Inbound'
@@ -45,55 +45,118 @@ param securityRules = [
     destinationAddressPrefixes: []
   }
   {
-    name: 'Allow_Out_WebPubSub'
-    description: 'Allow_Out_WebPubSub'
-    protocol: 'TCP'
+    name: 'Allow_In_AzureLoadBalancer'
+    description: 'Allow_In_AzureLoadBalancer'
+    protocol: '*'
     sourcePortRange: '*'
-    destinationPortRange: null
-    sourceAddressPrefix: '*'
-    destinationAddressPrefix: '172.16.1.0/24'
+    destinationPortRange: '*'
+    sourceAddressPrefix: 'AzureLoadBalancer'
+    destinationAddressPrefix: '*'
     access: 'Allow'
-    priority: 100
-    direction: 'Outbound'
+    priority: 900
+    direction: 'Inbound'
     sourcePortRanges: []
-    destinationPortRanges: [
-      '80'
-      '443'
-      '10081'
-    ]
+    destinationPortRanges: []
     sourceAddressPrefixes: []
     destinationAddressPrefixes: []
   }
   {
-    name: 'Allow_Out_Functions'
-    description: 'Allow_Out_Functions'
+    name: 'Deny_In_All'
+    description: 'Deny_In_All'
+    protocol: '*'
+    sourcePortRange: '*'
+    destinationPortRange: '*'
+    sourceAddressPrefix: '*'
+    destinationAddressPrefix: '*'
+    access: 'Deny'
+    priority: 1000
+    direction: 'Inbound'
+    sourcePortRanges: []
+    destinationPortRanges: []
+    sourceAddressPrefixes: []
+    destinationAddressPrefixes: []
+  }
+  {
+    name: 'Allow_Out_Vnet'
+    description: 'Allow_Out_Vnet'
     protocol: 'TCP'
     sourcePortRange: '*'
     destinationPortRange: '443'
-    sourceAddressPrefix: '*'
-    destinationAddressPrefix: '172.16.3.0/24'
+    sourceAddressPrefix: 'VirtualNetwork'
+    destinationAddressPrefix: 'VirtualNetwork'
     access: 'Allow'
-    priority: 200
+    priority: 100
     direction: 'Outbound'
     sourcePortRanges: []
     destinationPortRanges: []
     sourceAddressPrefixes: []
     destinationAddressPrefixes: []
   }
-  // {
-  //   name: 'Deny_Out_All'
-  //   description: 'Deny_Out_All'
-  //   protocol: 'TCP'
-  //   sourcePortRange: '*'
-  //   destinationPortRange: '*'
-  //   sourceAddressPrefix: '*'
-  //   destinationAddressPrefix: '*'
-  //   access: 'Deny'
-  //   priority: 900
-  //   direction: 'Outbound'
-  //   sourcePortRanges: []
-  //   destinationPortRanges: []
-  //   sourceAddressPrefixes: []
-  //   destinationAddressPrefixes: []
-  // }
+  {
+    name: 'Allow_Out_Storage'
+    description: 'Allow_Out_Storage'
+    protocol: 'TCP'
+    sourcePortRange: '*'
+    destinationPortRange: '443'
+    sourceAddressPrefix: 'VirtualNetwork'
+    destinationAddressPrefix: 'Storage'
+    access: 'Allow'
+    priority: 900
+    direction: 'Outbound'
+    sourcePortRanges: []
+    destinationPortRanges: []
+    sourceAddressPrefixes: []
+    destinationAddressPrefixes: []
+  }
+  {
+    name: 'Allow_Out_KeyVault'
+    description: 'Allow_Out_KeyVault'
+    protocol: 'TCP'
+    sourcePortRange: '*'
+    destinationPortRange: '443'
+    sourceAddressPrefix: 'VirtualNetwork'
+    destinationAddressPrefix: 'AzureKeyVault'
+    access: 'Allow'
+    priority: 910
+    direction: 'Outbound'
+    sourcePortRanges: []
+    destinationPortRanges: []
+    sourceAddressPrefixes: []
+    destinationAddressPrefixes: []
+  }
+  {
+    name: 'Allow_Out_Monitor'
+    description: 'Allow_Out_Monitor'
+    protocol: 'TCP'
+    sourcePortRange: '*'
+    destinationPortRange: null
+    sourceAddressPrefix: 'VirtualNetwork'
+    destinationAddressPrefix: 'AzureMonitor'
+    access: 'Allow'
+    priority: 920
+    direction: 'Outbound'
+    sourcePortRanges: []
+    destinationPortRanges: [
+      '1886'
+      '443'
+    ]
+    sourceAddressPrefixes: []
+    destinationAddressPrefixes: []
+  }
+  {
+    name: 'Deny_Out_All'
+    description: 'Deny_Out_All'
+    protocol: 'TCP'
+    sourcePortRange: '*'
+    destinationPortRange: '*'
+    sourceAddressPrefix: '*'
+    destinationAddressPrefix: '*'
+    access: 'Deny'
+    priority: 1000
+    direction: 'Outbound'
+    sourcePortRanges: []
+    destinationPortRanges: []
+    sourceAddressPrefixes: []
+    destinationAddressPrefixes: []
+  }
 ]

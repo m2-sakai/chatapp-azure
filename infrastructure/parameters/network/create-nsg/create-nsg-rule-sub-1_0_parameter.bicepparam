@@ -13,14 +13,18 @@ param securityRules = [
     description: 'Allow_In_ApiManagement'
     protocol: '*'
     sourcePortRange: '*'
-    destinationPortRange: '443'
-    sourceAddressPrefix: '172.16.0.0/24'
-    destinationAddressPrefix: '*'
+    destinationPortRange: null
+    sourceAddressPrefix: 'ApiManagement'
+    destinationAddressPrefix: 'VirtualNetwork'
     access: 'Allow'
     priority: 100
     direction: 'Inbound'
     sourcePortRanges: []
-    destinationPortRanges: []
+    destinationPortRanges: [
+      '80'
+      '443'
+      '10081'
+    ]
     sourceAddressPrefixes: []
     destinationAddressPrefixes: []
   }
