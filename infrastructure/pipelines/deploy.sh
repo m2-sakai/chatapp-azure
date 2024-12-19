@@ -43,4 +43,4 @@ az deployment group create -g rg-adcl-test-je-01 -f ../templates/web/create-func
 az deployment group create -g rg-adcl-test-je-01 -f ../templates/database/create-cosmos_template.bicep -p ../parameters/database/create-cosmos/create-cosmos-01_parameter.bicepparam
 
 # apim deploy
-# az deployment group create -g rg-adcl-test-je-01 -f ../templates/integration/create-apim_template.bicep -p ../parameters/integration/create-apim/create-apim-01_parameter.bicepparam
+az deployment group create -g rg-adcl-test-je-01 -f ../templates/integration/create-apim_template.bicep -p ../parameters/integration/create-apim/create-apim-01_parameter.bicepparam
