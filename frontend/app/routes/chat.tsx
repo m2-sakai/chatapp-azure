@@ -45,7 +45,7 @@ export default function Chat() {
         socketRef.current = websocket;
 
         websocket.onopen = () => {
-          // console.log('WebSocket接続がオープンしました。');
+          console.log('WebSocket接続がオープンしました。');
         };
 
         websocket.onmessage = (event) => {
@@ -83,7 +83,7 @@ export default function Chat() {
         timestamp: new Date().toISOString(),
       };
 
-      // console.log(message);
+      console.log(message);
 
       socketRef.current.send(JSON.stringify(message));
       setInput('');

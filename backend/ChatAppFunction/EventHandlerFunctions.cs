@@ -27,7 +27,6 @@ namespace ChatAppFunction
         }
 
         [Function("PublishSaveMessage")]
-        [WebPubSubOutput(Hub = "chatroom")]
         public async Task<UserEventResponse> PublishSaveMessage([WebPubSubTrigger("chatroom", WebPubSubEventType.User, "message")] UserEventRequest request)
         {
             _logger.LogInformation("Processing MessageEventHandler Functions.");
