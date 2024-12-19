@@ -9,22 +9,18 @@ param networkSecurityGroupName = 'nsg-adcl-test-je-sub-1_0'
 /*** param: Security Rule ***/
 param securityRules = [
   {
-    name: 'Allow_In_ApiManagement'
-    description: 'Allow_In_ApiManagement'
-    protocol: '*'
+    name: 'Allow_In_Vnet'
+    description: 'Allow_In_Vnet'
+    protocol: 'TCP'
     sourcePortRange: '*'
-    destinationPortRange: null
-    sourceAddressPrefix: 'ApiManagement'
+    destinationPortRange: '*'
+    sourceAddressPrefix: 'VirtualNetwork'
     destinationAddressPrefix: 'VirtualNetwork'
     access: 'Allow'
     priority: 100
     direction: 'Inbound'
     sourcePortRanges: []
-    destinationPortRanges: [
-      '80'
-      '443'
-      '10081'
-    ]
+    destinationPortRanges: []
     sourceAddressPrefixes: []
     destinationAddressPrefixes: []
   }
@@ -44,20 +40,20 @@ param securityRules = [
     sourceAddressPrefixes: []
     destinationAddressPrefixes: []
   }
-  // {
-  //   name: 'Deny_In_All'
-  //   description: 'Deny_In_All'
-  //   protocol: '*'
-  //   sourcePortRange: '*'
-  //   destinationPortRange: '*'
-  //   sourceAddressPrefix: '*'
-  //   destinationAddressPrefix: '*'
-  //   access: 'Deny'
-  //   priority: 1000
-  //   direction: 'Inbound'
-  //   sourcePortRanges: []
-  //   destinationPortRanges: []
-  //   sourceAddressPrefixes: []
-  //   destinationAddressPrefixes: []
-  // }
+  {
+    name: 'Deny_In_All'
+    description: 'Deny_In_All'
+    protocol: '*'
+    sourcePortRange: '*'
+    destinationPortRange: '*'
+    sourceAddressPrefix: '*'
+    destinationAddressPrefix: '*'
+    access: 'Deny'
+    priority: 1000
+    direction: 'Inbound'
+    sourcePortRanges: []
+    destinationPortRanges: []
+    sourceAddressPrefixes: []
+    destinationAddressPrefixes: []
+  }
 ]

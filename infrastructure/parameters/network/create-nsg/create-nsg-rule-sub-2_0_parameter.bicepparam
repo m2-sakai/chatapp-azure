@@ -29,18 +29,14 @@ param securityRules = [
     description: 'Allow_Out_WebPubSub'
     protocol: 'TCP'
     sourcePortRange: '*'
-    destinationPortRange: null
+    destinationPortRange: '*'
     sourceAddressPrefix: '*'
     destinationAddressPrefix: '172.16.1.0/24'
     access: 'Allow'
     priority: 100
     direction: 'Outbound'
     sourcePortRanges: []
-    destinationPortRanges: [
-      '80'
-      '443'
-      '10081'
-    ]
+    destinationPortRanges: []
     sourceAddressPrefixes: []
     destinationAddressPrefixes: []
   }

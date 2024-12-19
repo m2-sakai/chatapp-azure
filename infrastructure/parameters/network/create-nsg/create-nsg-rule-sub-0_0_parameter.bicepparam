@@ -29,18 +29,14 @@ param securityRules = [
     description: 'Allow_In_Internet'
     protocol: '*'
     sourcePortRange: '*'
-    destinationPortRange: null
+    destinationPortRange: '443'
     sourceAddressPrefix: 'Internet'
     destinationAddressPrefix: 'VirtualNetwork'
     access: 'Allow'
     priority: 200
     direction: 'Inbound'
     sourcePortRanges: []
-    destinationPortRanges: [
-      '80'
-      '443'
-      '10081'
-    ]
+    destinationPortRanges: []
     sourceAddressPrefixes: []
     destinationAddressPrefixes: []
   }

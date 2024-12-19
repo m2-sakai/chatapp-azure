@@ -7,6 +7,7 @@ import { fetchChatList, fetchToken } from '../features/chats/api/chatapi';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { v4 as uuidv4 } from 'uuid';
 import { API_ROUTES } from '../features/chats/api/route';
+import Header from '../components/header';
 
 export const clientLoader = async () => {
   try {
@@ -82,7 +83,7 @@ export default function Chat() {
         timestamp: new Date().toISOString(),
       };
 
-      console.log(message);
+      // console.log(message);
 
       socketRef.current.send(JSON.stringify(message));
       setInput('');
@@ -98,16 +99,16 @@ export default function Chat() {
 
   return (
     <>
+      <Header />
       <div className='flex flex-col justify-between h-screen'>
-        <div className='p-4 bg-blue-600 text-white'>チャットルーム</div>
-
-        <div className='flex-grow overflow-y-auto p-4'>
+        <div className='flex-grow overflow-y-auto p-4 mt-[50px]'>
           {messages.map((message) => (
             <div key={message.id} className={`mb-4 ${message.senderEmail !== userData.email ? 'text-left' : 'text-right'}`}>
               <div className='font-semibold'>{message.senderName}</div>
               <div className={`flex ${message.senderEmail !== userData.email ? 'justify-start' : 'justify-end'} mb-2`}>
                 <div className={`rounded-lg px-4 py-2 max-w-1/3 shadow break-words whitespace-pre-wrap ${message.senderEmail !== userData.email ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>
                   {message.content}
+                  <div className={`text-xs ${message.senderEmail !== userData.email ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>{new Date(message.timestamp).toLocaleString()}</div>
                 </div>
               </div>
             </div>
@@ -116,14 +117,7 @@ export default function Chat() {
         </div>
 
         <div className='flex p-4 bg-gray-100 fixed bottom-0 left-0 right-0'>
-          <textarea
-            className='w-full p-2 border rounded-lg'
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder='メッセージを入力...'
-            rows={2} // 初期表示行数。必要に応じて調整してください。
-          />
+          <textarea className='w-full p-2 border rounded-lg' value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder='メッセージを入力...' rows={2} />
           <Button className='mt-8' onClick={sendMessage}>
             送信
           </Button>
