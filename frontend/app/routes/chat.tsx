@@ -101,7 +101,7 @@ export default function Chat() {
     <>
       <Header />
       <div className='flex flex-col justify-between h-screen'>
-        <div className='flex-grow overflow-y-auto p-4 mt-[50px]'>
+        <div className='flex-grow overflow-y-auto p-4 mt-[50px] mb-[100px]'>
           {messages.map((message) => (
             <div key={message.id} className={`mb-4 ${message.senderEmail !== userData.email ? 'text-left' : 'text-right'}`}>
               <div className='font-semibold'>{message.senderName}</div>
