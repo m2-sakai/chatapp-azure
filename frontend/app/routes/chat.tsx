@@ -106,7 +106,7 @@ export default function Chat() {
             <div key={message.id} className={`mb-4 ${message.senderEmail !== userData.email ? 'text-left' : 'text-right'}`}>
               <div className='font-semibold'>{message.senderName}</div>
               <div className={`flex ${message.senderEmail !== userData.email ? 'justify-start' : 'justify-end'} mb-2`}>
-                <div className={`rounded-lg px-4 py-2 max-w-1/3 shadow break-words whitespace-pre-wrap ${message.senderEmail !== userData.email ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>
+                <div className={`rounded-lg px-4 py-2 max-w-64 shadow break-words whitespace-pre-wrap ${message.senderEmail !== userData.email ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>
                   {message.content}
                   <div className={`text-xs ${message.senderEmail !== userData.email ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>{new Date(message.timestamp).toLocaleString()}</div>
                 </div>
