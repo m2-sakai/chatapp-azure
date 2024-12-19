@@ -46,7 +46,7 @@ var host = new HostBuilder()
     })
     .ConfigureLogging(logging =>
     {
-        logging.SetMinimumLevel(LogLevel.Trace);
+        logging.SetMinimumLevel(LogLevel.Information);
         logging.Services.Configure<LoggerFilterOptions>(options =>
         {
             var defaultRule = options.Rules.FirstOrDefault(rule => rule.ProviderName == "Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider");

@@ -57,6 +57,22 @@ param securityRules = [
     destinationAddressPrefixes: []
   }
   {
+    name: 'Allow_Out_Storage'
+    description: 'Allow_Out_Storage'
+    protocol: 'TCP'
+    sourcePortRange: '*'
+    destinationPortRange: '443'
+    sourceAddressPrefix: '*'
+    destinationAddressPrefix: 'Storage'
+    access: 'Allow'
+    priority: 300
+    direction: 'Outbound'
+    sourcePortRanges: []
+    destinationPortRanges: []
+    sourceAddressPrefixes: []
+    destinationAddressPrefixes: []
+  }
+  {
     name: 'Allow_Out_Monitor'
     description: 'Allow_Out_Monitor'
     protocol: 'TCP'

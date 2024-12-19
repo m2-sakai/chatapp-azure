@@ -36,11 +36,20 @@ namespace ChatAppFunction
 
             try
             {
-                // DBにチャットメッセージを保存
-                await _container.CreateItemAsync(message, new PartitionKey(message.SenderEmail));
+                // DBに既に同じIDがないか確認
+                var response = await _container.ReadItemAsync<ChatMessage>(message.Id, new PartitionKey(message.SenderEmail));
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    // DBにチャットメッセージを保存
+                    await _container.CreateItemAsync(message, new PartitionKey(message.SenderEmail));
 
-                // ブロードキャスト
-                await _webPubSubServiceClient.SendToAllAsync(RequestContent.Create(message), ContentType.ApplicationJson);
+                    // ブロードキャスト
+                    await _webPubSubServiceClient.SendToAllAsync(RequestContent.Create(message), ContentType.ApplicationJson);
+                }
+                else
+                {
+                    _logger.LogInformation("Message with the same ID already exists, skip.");
+                }
             }
             catch (JsonException ex)
             {
