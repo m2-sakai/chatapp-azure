@@ -7,6 +7,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace ChatAppFunction
 {
@@ -37,8 +38,12 @@ namespace ChatAppFunction
             try
             {
                 // DBに既に同じIDがないか確認
-                var response = await _container.ReadItemAsync<ChatMessage>(message.Id, new PartitionKey(message.SenderEmail));
-                if (response.StatusCode == HttpStatusCode.NotFound)
+                var query = new QueryDefinition("SELECT * FROM c WHERE c.id = @id")
+                            .WithParameter("@id", message.Id);
+                var iterator = _container.GetItemQueryIterator<ChatMessage>(query);
+                var existingMessage = (await iterator.ReadNextAsync()).FirstOrDefault();
+
+                if (existingMessage == null)
                 {
                     // DBにチャットメッセージを保存
                     await _container.CreateItemAsync(message, new PartitionKey(message.SenderEmail));

@@ -117,19 +117,19 @@ namespace ChatAppFunction
                 var iterator = _container.GetItemQueryIterator<UserInfo>(query);
                 var existingUser = (await iterator.ReadNextAsync()).FirstOrDefault();
 
-                if (existingUser != null)
+                if (existingUser == null)
                 {
-                    user.Id = existingUser.Id;
-                    var response = await _container.ReplaceItemAsync(user, user.Id, new PartitionKey(user.Email));
-                    var successResponse = req.CreateResponse(HttpStatusCode.OK);
+                    user.Id = Guid.NewGuid().ToString();
+                    var response = await _container.CreateItemAsync(user, new PartitionKey(user.Email));
+                    var successResponse = req.CreateResponse(HttpStatusCode.Created);
                     await successResponse.WriteAsJsonAsync(response.Resource);
                     return successResponse;
                 }
                 else
                 {
-                    user.Id = Guid.NewGuid().ToString();
-                    var response = await _container.CreateItemAsync(user, new PartitionKey(user.Email));
-                    var successResponse = req.CreateResponse(HttpStatusCode.Created);
+                    user.Id = existingUser.Id;
+                    var response = await _container.ReplaceItemAsync(user, user.Id, new PartitionKey(user.Email));
+                    var successResponse = req.CreateResponse(HttpStatusCode.OK);
                     await successResponse.WriteAsJsonAsync(response.Resource);
                     return successResponse;
                 }
