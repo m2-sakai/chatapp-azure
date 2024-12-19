@@ -43,7 +43,7 @@ export default function Chat() {
         socketRef.current = websocket;
 
         websocket.onopen = () => {
-          console.log('WebSocket接続がオープンしました。');
+          // console.log('WebSocket接続がオープンしました。');
         };
 
         websocket.onmessage = (event) => {
@@ -75,18 +75,15 @@ export default function Chat() {
         timestamp: new Date().toISOString(),
       };
 
-      console.log(message);
-
-      socketRef.current.send(
-        // JSON.stringify({
-        //   type: 'event',
-        //   event: 'createChat',
-        //   dataType: 'json',
-        //   data: message,
-        // })
-        JSON.stringify(message)
-      );
+      socketRef.current.send(JSON.stringify(message));
       setInput('');
+    }
+  };
+
+  const handleKeyDown = (e: any) => {
+    if (e.key === 'Enter' && e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
     }
   };
 
@@ -98,16 +95,27 @@ export default function Chat() {
         {messages.map((message) => (
           <div key={message.id} className={`mb-4 ${message.senderEmail !== userData.email ? 'text-left' : 'text-right'}`}>
             <div className='font-semibold'>{message.senderName}</div>
-            <div key={message.id} className={`flex ${message.senderEmail !== userData.email ? 'justify-start' : 'justify-end'} mb-2`}>
-              <div className={`rounded-lg px-4 py-2 max-w-xs shadow ${message.senderEmail !== userData.email ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>{message.content}</div>
+            <div className={`flex ${message.senderEmail !== userData.email ? 'justify-start' : 'justify-end'} mb-2`}>
+              <div className={`rounded-lg px-4 py-2 max-w-1/3 shadow break-words whitespace-pre-wrap ${message.senderEmail !== userData.email ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>
+                {message.content}
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className='flex p-4 bg-gray-100'>
-        <input type='text' className='w-full p-2 border rounded-lg' value={input} onChange={(e) => setInput(e.target.value)} placeholder='メッセージを入力...' />
-        <Button onClick={sendMessage}>送信</Button>
+      <div className='flex p-4 bg-gray-100 fixed bottom-0 left-0 right-0'>
+        <textarea
+          className='w-full p-2 border rounded-lg'
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder='メッセージを入力...'
+          rows={2} // 初期表示行数。必要に応じて調整してください。
+        />
+        <Button className='mt-8' onClick={sendMessage}>
+          送信
+        </Button>
       </div>
     </div>
   );

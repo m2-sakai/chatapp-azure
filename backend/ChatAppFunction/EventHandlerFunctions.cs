@@ -31,6 +31,7 @@ namespace ChatAppFunction
         public async Task<UserEventResponse> PublishSaveMessage([WebPubSubTrigger("chatroom", WebPubSubEventType.User, "message")] UserEventRequest request)
         {
             _logger.LogInformation("Processing MessageEventHandler Functions.");
+            _logger.LogInformation(request.Data.ToString());
 
             var message = JsonConvert.DeserializeObject<ChatMessage>(request.Data.ToString());
 
